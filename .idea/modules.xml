@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/owms.iml" filepath="$PROJECT_DIR$/owms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/owms-core/owms-core.iml" filepath="$PROJECT_DIR$/owms-core/owms-core.iml" />
+    </modules>
+  </component>
+</project>
