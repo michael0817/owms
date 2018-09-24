@@ -33,13 +33,13 @@ import com.bootdo.common.utils.R;
 public class OrderController {
 	@Autowired
 	private OrderService orderService;
-	
+
 	@GetMapping()
 	@RequiresPermissions("order:order:list")
-	String List(){
-	    return "order/order/list";
+	String order(){
+	    return "/order/order/list";
 	}
-	
+
 	@ResponseBody
 	@GetMapping("/list")
 	@RequiresPermissions("order:order:list")
@@ -52,10 +52,10 @@ public class OrderController {
 		return pageUtils;
 	}
 	
-	@GetMapping("/add")
-	@RequiresPermissions("order:order:add")
-	String add(){
-	    return "order/order/add";
+	@GetMapping("/import")
+	@RequiresPermissions("order:order:import")
+	String mergeAndImport(){
+	    return "com/bootdo/order/order/import";
 	}
 
 	@GetMapping("/edit/{orderId}")
@@ -63,7 +63,7 @@ public class OrderController {
 	String edit(@PathVariable("orderId") Long orderId,Model model){
 		OrderDO list = orderService.get(orderId);
 		model.addAttribute("list", list);
-	    return "order/order/edit";
+	    return "com/bootdo/order/order/edit";
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class OrderController {
 	 */
 	@ResponseBody
 	@PostMapping("/save")
-	@RequiresPermissions("order:order:add")
+	@RequiresPermissions("order:order:import")
 	public R save( OrderDO list){
 		if(orderService.save(list)>0){
 			return R.ok();

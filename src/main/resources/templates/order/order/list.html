@@ -9,8 +9,11 @@
 				<div class="ibox-body">
 					<div class="fixed-table-toolbar">
 						<div class="columns pull-left">
-							<button shiro:hasPermission="order:order:add" type="button" class="btn  btn-primary" onclick="add()">
-								<i class="fa fa-plus" aria-hidden="true"></i>添加
+							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
+									<i class="fa fa-upload" aria-hidden="true"></i>导入
+							</button>
+							<button shiro:hasPermission="order:order:export" type="button" class="btn  btn-primary" onclick="export()">
+								<i class="fa fa-download" aria-hidden="true"></i>导出
 							</button>
 							<button shiro:hasPermission="order:order:batchRemove" type="button" class="btn  btn-danger"
 								onclick="batchRemove()">
@@ -20,13 +23,13 @@
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
 						</div>
-						<div class="search pull-right col-md-3">
+						<div class="search pull-right ">
 							<input id="orderId" type="text" class="form-control" placeholder="订单编号">
 						</div>
-						<div class="search pull-right col-md-3">
+						<div class="search pull-right ">
 							<input id="moduleId" type="select" class="form-control" placeholder="模板">
 						</div>
-						<div class="search pull-right col-md-3">
+						<div class="search pull-right ">
 							<input id="createDate" type="text" class="form-control" placeholder="日期(YYYY-MM-DD)">
 						</div>
 
@@ -54,11 +57,6 @@
 		<div shiro:hasPermission="order:order:remove">
 			<script type="text/javascript">
 				var s_remove_h = '';
-			</script>
-		</div>
-		<div shiro:hasPermission="order:order:resetPwd">
-			<script type="text/javascript">
-				var s_resetPwd_h = '';
 			</script>
 		</div>
 	</div>

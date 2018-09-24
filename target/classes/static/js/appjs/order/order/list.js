@@ -120,14 +120,14 @@ function load() {
 function reLoad() {
 	$('#exampleTable').bootstrapTable('refresh');
 }
-function add() {
+function mergeAndImport() {
 	layer.open({
 		type : 2,
-		title : '增加',
+		title : '导入',
 		maxmin : true,
 		shadeClose : false, // 点击遮罩关闭层
 		area : [ '800px', '520px' ],
-		content : prefix + '/add' // iframe的url
+		content : prefix + '/import' // iframe的url
 	});
 }
 function edit(id) {
