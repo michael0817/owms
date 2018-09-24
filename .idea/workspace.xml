@@ -163,7 +163,6 @@
   <component name="NodePackageJsonFileManager">
     <packageJsonPaths>
       <path value="$PROJECT_DIR$/src/main/resources/static/editor-app/libs/es5-shim-15.3.4.5/package.json" />
-      <path value="$PROJECT_DIR$/target/classes/static/editor-app/libs/es5-shim-15.3.4.5/package.json" />
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
@@ -184,6 +183,11 @@
             <path>
               <item name="owms-parent" type="b2602c69:ProjectViewProjectNode" />
               <item name="owms" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="owms-parent" type="b2602c69:ProjectViewProjectNode" />
+              <item name="owms" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -311,12 +315,12 @@
       <updated>1537333220479</updated>
       <workItem from="1537333232433" duration="4456000" />
       <workItem from="1537355599329" duration="83000" />
-      <workItem from="1537710249895" duration="11403000" />
+      <workItem from="1537710249895" duration="11713000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15942000" />
+    <option name="totallyTimeSpent" value="16252000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -329,6 +333,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="20" y="43" width="1400" height="772" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="Event Log" order="13" sideWeight="0.50073636" side_tool="true" weight="0.3288889" />
