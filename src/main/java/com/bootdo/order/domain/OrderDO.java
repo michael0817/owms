@@ -6,10 +6,10 @@ import java.util.Date;
 
 
 /**
- * 订单模板
+ * 订单详情
  * 
- * @author chglee
- * @email 1992lcg@163.com
+ * @author xumx
+ * @email michael0817@126.com
  * @date 2018-09-22 15:18:03
  */
 public class OrderDO implements Serializable {

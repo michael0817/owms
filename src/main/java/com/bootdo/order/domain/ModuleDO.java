@@ -4,21 +4,20 @@ import java.io.Serializable;
 import java.util.Date;
 
 
-
 /**
  * 订单模板
  * 
- * @author chglee
- * @email 1992lcg@163.com
+ * @author xumx
+ * @email michael0817@126.com
  * @date 2018-09-22 16:27:23
  */
 public class ModuleDO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	//
+	//模板编号
 	private Long moduleId;
-	//文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)
-	private Integer type;
+	//文件类型
+	private Integer moduleType;
 	//前缀
 	private String prefix;
 	//URL地址
@@ -39,16 +38,16 @@ public class ModuleDO implements Serializable {
 		return moduleId;
 	}
 	/**
-	 * 设置：文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)
+	 * 设置：文件类型
 	 */
-	public void setType(Integer type) {
-		this.type = type;
+	public void setModuleType(Integer moduleType) {
+		this.moduleType = moduleType;
 	}
 	/**
-	 * 获取：文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)
+	 * 获取：文件类型
 	 */
-	public Integer getType() {
-		return type;
+	public Integer getModuleType() {
+		return moduleType;
 	}
 	/**
 	 * 设置：前缀

@@ -4,14 +4,14 @@
 <mapper namespace="com.bootdo.order.dao.ModuleDao">
 
 	<select id="get" resultType="com.bootdo.order.domain.ModuleDO">
-		select `module_id`,`type`,`prefix`,`url`,`create_date` from order_module where module_id = #{value}
+		select `module_id`,`module_type`,`prefix`,`url`,`create_date` from order_module where module_id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.order.domain.ModuleDO">
-		select `module_id`,`type`,`prefix`,`url`,`create_date` from order_module
+		select `module_id`,`module_type`,`prefix`,`url`,`create_date` from order_module
         <where>  
 		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  		  <if test="moduleType != null and moduleType != ''"> and module_type = #{moduleType} </if>
 		  		  <if test="prefix != null and prefix != ''"> and prefix = #{prefix} </if>
 		  		  <if test="url != null and url != ''"> and url = #{url} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
@@ -33,7 +33,7 @@
 		select count(*) from order_module
 		 <where>  
 		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
-		  		  <if test="type != null and type != ''"> and type = #{type} </if>
+		  		  <if test="moduleType != null and moduleType != ''"> and module_type = #{moduleType} </if>
 		  		  <if test="prefix != null and prefix != ''"> and prefix = #{prefix} </if>
 		  		  <if test="url != null and url != ''"> and url = #{url} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
@@ -43,14 +43,14 @@
 	<insert id="save" parameterType="com.bootdo.order.domain.ModuleDO" useGeneratedKeys="true" keyProperty="moduleId">
 		insert into order_module
 		(
-			`type`, 
+			`module_type`,
 			`prefix`, 
 			`url`, 
 			`create_date`
 		)
 		values
 		(
-			#{type}, 
+			#{moduleType},
 			#{prefix}, 
 			#{url}, 
 			#{createDate}
@@ -60,7 +60,7 @@
 	<update id="update" parameterType="com.bootdo.order.domain.ModuleDO">
 		update order_module 
 		<set>
-			<if test="type != null">`type` = #{type}, </if>
+			<if test="moduleType != null">`module_type` = #{moduleType}, </if>
 			<if test="prefix != null">`prefix` = #{prefix}, </if>
 			<if test="url != null">`url` = #{url}, </if>
 			<if test="createDate != null">`create_date` = #{createDate}</if>

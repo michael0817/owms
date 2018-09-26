@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.order.dao.FieldMappingDao">
+
+	<select id="get" resultType="com.bootdo.order.domain.FieldMappingDO">
+		select `module_id`,`module_type`,`business_field_name`,`excel_field_name` from order_field_mapping where module_id = #{value}
+	</select>
+
+	<select id="list" resultType="com.bootdo.order.domain.FieldMappingDO">
+		select `module_id`,`module_type`,`business_field_name`,`excel_field_name` from order_field_mapping
+        <where>  
+		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
+		  		  <if test="moduleType != null and moduleType != ''"> and module_type = #{moduleType} </if>
+		  		  <if test="businessFieldName != null and businessFieldName != ''"> and business_field_name = #{businessFieldName} </if>
+		  		  <if test="excelFieldName != null and excelFieldName != ''"> and excel_field_name = #{excelFieldName} </if>
+		  		</where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+			<otherwise>
+                order by module_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="count" resultType="int">
+		select count(*) from order_field_mapping
+		 <where>  
+		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
+		  		  <if test="moduleType != null and moduleType != ''"> and module_type = #{moduleType} </if>
+		  		  <if test="businessFieldName != null and businessFieldName != ''"> and business_field_name = #{businessFieldName} </if>
+		  		  <if test="excelFieldName != null and excelFieldName != ''"> and excel_field_name = #{excelFieldName} </if>
+		  		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.bootdo.order.domain.FieldMappingDO">
+		insert into order_field_mapping
+		(
+			`module_id`, 
+			`module_type`, 
+			`business_field_name`, 
+			`excel_field_name`
+		)
+		values
+		(
+			#{moduleId}, 
+			#{moduleType}, 
+			#{businessFieldName}, 
+			#{excelFieldName}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.bootdo.order.domain.FieldMappingDO">
+		update order_field_mapping 
+		<set>
+			<if test="moduleType != null">`module_type` = #{moduleType}, </if>
+			<if test="businessFieldName != null">`business_field_name` = #{businessFieldName}, </if>
+			<if test="excelFieldName != null">`excel_field_name` = #{excelFieldName}</if>
+		</set>
+		where module_id = #{moduleId}
+	</update>
+	
+	<delete id="remove">
+		delete from order_field_mapping where module_id = #{value}
+	</delete>
+	
+	<delete id="batchRemove">
+		delete from order_field_mapping where module_id in 
+		<foreach item="moduleId" collection="array" open="(" separator="," close=")">
+			#{moduleId}
+		</foreach>
+	</delete>
+
+</mapper>

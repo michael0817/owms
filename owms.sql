@@ -1,8 +1,8 @@
 SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `order_module`;
 CREATE TABLE `order_module` (
-  `module_id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `type` int(10) DEFAULT NULL COMMENT '文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)',
+  `module_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '模板编号',
+  `module_type` int(10) DEFAULT NULL COMMENT '文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)',
   `prefix` varchar(100) DEFAULT NULL COMMENT '前缀',
   `url` varchar(200) DEFAULT NULL COMMENT 'URL地址',
   `create_date` date NOT NULL COMMENT '创建日期',
@@ -25,5 +25,20 @@ CREATE TABLE `order_list` (
   `create_date` date NOT NULL COMMENT '创建日期',
   PRIMARY KEY (`order_id`),
   INDEX (`create_date`,`module_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='订单模板';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='订单详情';
 
+
+DROP TABLE IF EXISTS `order_field_mapping`;
+CREATE TABLE `order_field_mapping`(
+  `module_id` int(10) NOT NULL COMMENT '模板编号',
+  `module_type` int(10) NOT NULL COMMENT '文件类型(1-订单宝模板;2-各平台订单模板;3-运单模板)',
+  `business_field_name` varchar(200) NOT NULL COMMENT '业务字段',
+  `excel_field_name` varchar(200) DEFAULT NULL COMMENT 'EXCEL字段名',
+  PRIMARY KEY (`module_id`,`module_type`,`business_field_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='模板字段映射';
+
+DROP TABLE IF EXISTS `order_excel_fields`;
+CREATE TABLE `order_excel_fields`(
+  `module_name` varchar(200) NOT NULL COMMENT '模板文件名',
+  `excel_field_name` varchar(200) DEFAULT NULL COMMENT 'EXCEL字段名'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Excel模板字段';

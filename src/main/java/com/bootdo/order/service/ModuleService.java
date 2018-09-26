@@ -7,9 +7,9 @@ import java.util.Map;
 
 /**
  * 订单模板
- * 
- * @author chglee
- * @email 1992lcg@163.com
+ *
+ * @author xumx
+ * @email michael0817@126.com
  * @date 2018-09-22 16:27:23
  */
 public interface ModuleService {

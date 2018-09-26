@@ -1,7 +1,9 @@
 
 var prefix = "/order/module"
+var moduleTypeDict = [];
 $(function() {
 	load();
+	loadModuleType();
 });
 
 function load() {
@@ -25,7 +27,7 @@ function load() {
 						// //发送到服务器的数据编码类型
 						pageSize : 10, // 如果设置了分页，每页数据条数
 						pageNumber : 1, // 如果设置了分布，首页页码
-						//search : true, // 是否显示搜索框
+						search : false, // 是否显示搜索框
 						showColumns : false, // 是否显示内容下拉框（选择显示的列）
 						sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
 						queryParams : function(params) {
@@ -47,41 +49,52 @@ function load() {
 								{
 									checkbox : true
 								},
-																{
+								{
 									field : 'moduleId', 
-									title : '' 
+									title : '模板编号',
+									visible : false
 								},
-																{
-									field : 'type', 
-									title : '文件类型'
+								{
+									field : 'moduleType',
+									title : '文件类型',
+                                    formatter : function(value, row, index) {
+										var dictValue = '';
+										$.each(moduleTypeDict,function(i,dict){
+											if(value == dict.value){
+                                                dictValue = dict.name+'';
+                                                return;
+											}
+										});
+										return dictValue;
+                                    }
 								},
-																{
+								{
 									field : 'prefix', 
 									title : '前缀' 
 								},
-																{
+								{
 									field : 'url', 
-									title : 'URL地址' 
+									title : '文件名'
 								},
-																{
+								{
 									field : 'createDate', 
 									title : '创建日期' 
 								},
-																{
+								{
 									title : '操作',
 									field : 'id',
 									align : 'center',
 									formatter : function(value, row, index) {
-										var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" mce_href="#" title="编辑" onclick="edit(\''
+										var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" title="编辑" mce_href="#" onclick="edit(\''
 												+ row.moduleId
 												+ '\')"><i class="fa fa-edit"></i></a> ';
 										var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
 												+ row.moduleId
 												+ '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm" href="#" title="备用"  mce_href="#" onclick="resetPwd(\''
+										var f = '<a class="btn btn-success btn-sm '+s_download_h+'" href="#" title="下载"  mce_href="#" onclick="download(\''
 												+ row.moduleId
-												+ '\')"><i class="fa fa-key"></i></a> ';
-										return e + d ;
+												+ '\')"><i class="fa fa-download"></i></a> ';
+										return f + d ;
 									}
 								} ]
 					});
@@ -131,8 +144,6 @@ function remove(id) {
 	})
 }
 
-function resetPwd(id) {
-}
 function batchRemove() {
 	var rows = $('#exampleTable').bootstrapTable('getSelections'); // 返回所有选择的行，当没有选择的记录时，返回一个空数组
 	if (rows.length == 0) {
@@ -166,4 +177,16 @@ function batchRemove() {
 	}, function() {
 
 	});
+}
+
+function loadModuleType() {
+    var html = "";
+    $.ajax({
+        url: '/common/dict/list/order_module',
+		async: false,
+        success: function (data) {
+            //加载数据
+            moduleTypeDict = data;
+        }
+    });
 }

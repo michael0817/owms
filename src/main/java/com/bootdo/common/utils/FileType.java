@@ -26,7 +26,7 @@ public class FileType {
 			}
 
 			// 创建文档类型数组1
-			String[] document = { "txt", "doc", "docx", "xls", "htm", "html", "jsp", "rtf", "wpd", "pdf", "ppt" };
+			String[] document = { "txt", "doc", "docx", "xls", "xlsx", "htm", "html", "jsp", "rtf", "wpd", "pdf", "ppt" };
 			for (int i = 0; i < document.length; i++) {
 				if (document[i].equals(fileType)) {
 					return 1;

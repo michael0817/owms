@@ -3,6 +3,7 @@ package com.bootdo.order.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.common.controller.BaseController;
 import com.bootdo.order.domain.OrderDO;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,22 +23,22 @@ import com.bootdo.common.utils.R;
 
 /**
  * 订单模板
- * 
- * @author chglee
- * @email 1992lcg@163.com
+ *
+ * @author xumx
+ * @email michael0817@126.com
  * @date 2018-09-22 15:18:03
  */
  
 @Controller
 @RequestMapping("/order/order")
-public class OrderController {
+public class OrderController extends BaseController {
 	@Autowired
 	private OrderService orderService;
 
 	@GetMapping()
 	@RequiresPermissions("order:order:list")
 	String order(){
-	    return "/order/order/list";
+	    return "order/order/list";
 	}
 
 	@ResponseBody
@@ -55,7 +56,7 @@ public class OrderController {
 	@GetMapping("/import")
 	@RequiresPermissions("order:order:import")
 	String mergeAndImport(){
-	    return "com/bootdo/order/order/import";
+	    return "order/order/import";
 	}
 
 	@GetMapping("/edit/{orderId}")
@@ -63,7 +64,7 @@ public class OrderController {
 	String edit(@PathVariable("orderId") Long orderId,Model model){
 		OrderDO list = orderService.get(orderId);
 		model.addAttribute("list", list);
-	    return "com/bootdo/order/order/edit";
+	    return "order/order/edit";
 	}
 	
 	/**
