@@ -16,7 +16,7 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface FieldMappingDao {
 
-	FieldMappingDO get(Integer moduleId);
+	FieldMappingDO get(Long moduleId);
 	
 	List<FieldMappingDO> list(Map<String,Object> map);
 	
@@ -26,7 +26,7 @@ public interface FieldMappingDao {
 	
 	int update(FieldMappingDO fieldMapping);
 	
-	int remove(Integer moduleId);
+	int remove(Long moduleId);
 	
-	int batchRemove(Integer[] moduleIds);
+	int batchRemove(Long[] moduleIds);
 }

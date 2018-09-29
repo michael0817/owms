@@ -5,6 +5,7 @@ import com.bootdo.order.domain.OrderDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +46,11 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public int remove(Long orderId){
 		return orderDao.remove(orderId);
+	}
+
+	@Override
+	public int removeByDate(Date createDate){
+		return orderDao.removeByDate(createDate);
 	}
 	
 	@Override

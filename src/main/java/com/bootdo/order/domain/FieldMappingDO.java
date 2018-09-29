@@ -16,7 +16,7 @@ public class FieldMappingDO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	//模板编号
-	private Integer moduleId;
+	private Long moduleId;
 	//文件类型
 	private Integer moduleType;
 	//业务字段
@@ -27,13 +27,13 @@ public class FieldMappingDO implements Serializable {
 	/**
 	 * 设置：模板编号
 	 */
-	public void setModuleId(Integer moduleId) {
+	public void setModuleId(Long moduleId) {
 		this.moduleId = moduleId;
 	}
 	/**
 	 * 获取：模板编号
 	 */
-	public Integer getModuleId() {
+	public Long getModuleId() {
 		return moduleId;
 	}
 	/**

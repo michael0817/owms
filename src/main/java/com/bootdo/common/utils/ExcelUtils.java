@@ -1,17 +1,13 @@
 package com.bootdo.common.utils;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 
@@ -33,10 +29,12 @@ public class ExcelUtils {
         this.workbook = workboook;
     }
 
-    public ExcelUtils(InputStream is) throws Exception {
-        workbook = WorkbookFactory.create(is);
-        //workbook = new HSSFWorkbook(is);
+    public ExcelUtils(File file) throws IOException {
+        this.workbook = WorkbookFactory.create(file);
+    }
 
+    public ExcelUtils(InputStream is) throws IOException {
+        this.workbook = WorkbookFactory.create(is);
     }
 
     public String toString() {
@@ -689,4 +687,10 @@ public class ExcelUtils {
         return strCell;
     }
 
+    public static void main(String[] args) throws Exception {
+        File file = new File("/Users/fjn/Downloads/excel/1平台订单模版02yit.xls");
+        InputStream in = new FileInputStream(file);
+        Workbook wb1= WorkbookFactory.create(in);
+        wb1.getSheetAt(0);
+    }
 }

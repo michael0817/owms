@@ -2,6 +2,7 @@ package com.bootdo.order.service;
 
 import com.bootdo.order.domain.OrderDO;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,10 @@ public interface OrderService {
 	int save(OrderDO list);
 	
 	int update(OrderDO list);
-	
+
+	int removeByDate(Date createDate);
+
 	int remove(Long orderId);
-	
+
 	int batchRemove(Long[] orderIds);
 }

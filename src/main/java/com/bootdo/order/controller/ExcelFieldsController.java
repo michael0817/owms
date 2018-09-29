@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.bootdo.order.service.ModuleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -35,17 +36,22 @@ import com.bootdo.common.utils.R;
 public class ExcelFieldsController {
 	@Autowired
 	private ExcelFieldsService excelFieldsService;
+
+	@Autowired
+    private ModuleService moduleService;
 	
 	@GetMapping()
-	String ExcelFields(){
+	String list(){
 	    return "order/excelFields/list";
 	}
 
 	@ResponseBody
-	@GetMapping("/listAll")
-	public List<ExcelFieldsDO> listAll() {
+	@GetMapping("/listAll/{moduleId}")
+	public List<ExcelFieldsDO> listAll(@PathVariable("moduleId") Long moduleId) {
 		// 查询列表数据
+        String moduleName = moduleService.get(moduleId).getUrl();
 		Map<String, Object> map = new HashMap<>(16);
+		map.put("moduleName",moduleName);
 		List<ExcelFieldsDO> excelFieldsList = excelFieldsService.list(map);
 		return excelFieldsList;
 	}

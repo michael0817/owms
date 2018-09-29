@@ -1,7 +1,7 @@
 
 var prefix = "/order/fieldMapping"
 var moduleList = [];
-var excelFieldsList = '';
+var excelFieldsList = [];
 $(function() {
     loadModuleType();
 	load();
@@ -26,7 +26,7 @@ function load() {
 						singleSelect : false, // 设置为true将禁止多选
 						// contentType : "application/x-www-form-urlencoded",
 						// //发送到服务器的数据编码类型
-						pageSize : 10, // 如果设置了分页，每页数据条数
+						pageSize : 200, // 如果设置了分页，每页数据条数
 						pageNumber : 1, // 如果设置了分布，首页页码
 						//search : true, // 是否显示搜索框
 						showColumns : false, // 是否显示内容下拉框（选择显示的列）
@@ -65,7 +65,7 @@ function load() {
 									field : 'excelFieldName', 
 									title : 'EXCEL字段名',
                                     formatter : function(value, row, index) {
-                                        return excelFieldsList;
+                                        return formatExcelFieldColumn(value,index);
                                     }
                                 // },
                                 // {
@@ -88,6 +88,7 @@ function load() {
 					});
 }
 function reLoad() {
+    //$('#exampleTable').bootstrapTable('destroy');
 	$('#exampleTable').bootstrapTable('refresh');
 }
 function add() {
@@ -189,12 +190,16 @@ function loadModuleType() {
             // $("#moduleType").chosen({
             //     maxHeight: 200
             // });
-            //点击事件
-            $('#moduleType').on('change', function(e, params) {
-                loadModuleList();
-            });
             loadModuleList();
         }
+    });
+    //点击事件
+    $('#moduleType').on('change', function(e, params) {
+        loadModuleList();
+    });
+    //点击事件
+    $('#moduleList').on('change', function(e, params) {
+        loadExcelFields();
     });
 }
 
@@ -213,16 +218,78 @@ function loadModuleList() {
 
 function loadExcelFields(){
     $.ajax({
-        url: '/order/excelFields/listAll',
+        url: '/order/excelFields/listAll/'+$('#moduleList option:selected').val(),
         async: false,
         success: function (data) {
             //加载数据
-            html = '<select class="form-control chosen-select">';
-            for (var i = 0; i < data.length; i++) {
-                html += '<option value="' + data[i].moduleName + '">' + data[i].excelFieldName + '</option>'
+            excelFieldsList = data;
+        }
+    });
+}
+
+function isInArray(arr,value){
+    for(var i = 0; i < arr.length; i++){
+        if(value === arr[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
+function formatExcelFieldColumn(value,index){
+    var html = '';
+    var forbidRow = [0,2,3,4,8,13];
+    if($('#moduleType option:selected').val() == 1 && isInArray(forbidRow,index)){
+    	html += '<select class="form-control chosen-select" autocomplete="off" disabled="disabled">';
+        html += '<option value="">--自动填充--</option>';
+	}else {
+        html += '<select class="form-control chosen-select" autocomplete="off">';
+        html += '<option value="">--空白--</option>';
+        for (var i = 0; i < excelFieldsList.length; i++) {
+            html += '<option value="' + excelFieldsList[i].moduleName + '"';
+            if (value == excelFieldsList[i].excelFieldName) {
+                html += ' selected="selected" ';
             }
-            html+='</select>';
-            excelFieldsList = html;
+            html += '>' + excelFieldsList[i].excelFieldName + '</option>';
+        }
+    }
+    html+='</select>';
+    return html;
+}
+
+function batchSave(){
+    var rows = [];
+    $('#exampleTable tbody tr').each(function(i){
+        var row = {};
+        row["moduleId"]=$('#moduleList option:selected').val();
+        row["moduleType"]=$('#moduleType option:selected').val();
+        $(this).children('td').each(function(j,e){
+            if(j==0){
+                row["businessFieldName"]=$(e).text();
+            }else if(j==1){
+                var fieldName = $(e).find('option:selected').text();
+                if(fieldName != '--空白--' && fileName != '--自动填充--'){
+                    row["excelFieldName"]=$(e).find('option:selected').text();
+                }else{
+                    row["excelFieldName"]='';
+                }
+            }
+        });
+        rows.push(row);
+    });
+    $.ajax({
+        url: '/order/fieldMapping/batchSave',
+        type: 'POST',
+        async: false,
+        dataType:"json",
+        contentType:"application/json",
+        data: JSON.stringify(rows),
+        success: function (data) {
+            if (data.code == 0) {
+                layer.msg("操作成功");
+            } else {
+                layer.alert(data.msg);
+            }
         }
     });
 }

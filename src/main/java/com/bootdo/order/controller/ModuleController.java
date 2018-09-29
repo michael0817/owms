@@ -1,36 +1,27 @@
 package com.bootdo.order.controller;
 
-import java.io.*;
-import java.net.URLDecoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.bootdo.common.config.BootdoConfig;
 import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.domain.DictDO;
-import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.service.FileService;
 import com.bootdo.common.utils.*;
 import com.bootdo.order.domain.ExcelFieldsDO;
 import com.bootdo.order.domain.ModuleDO;
 import com.bootdo.order.service.ExcelFieldsService;
+import com.bootdo.order.service.ModuleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import com.bootdo.order.service.ModuleService;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 订单模板
@@ -57,7 +48,7 @@ public class ModuleController extends BaseController {
 	
 	@GetMapping()
 	@RequiresPermissions("order:module:list")
-	String module(){
+	String list(){
 		return "order/module/list";
 	}
 	
@@ -79,6 +70,8 @@ public class ModuleController extends BaseController {
     public List<ModuleDO> listAll() {
 		// 查询列表数据
 		Map<String, Object> map = new HashMap<>(16);
+        map.put("sort","module_type");
+        map.put("order","asc");
 		List<ModuleDO> moduleList = moduleService.list(map);
 		return moduleList;
 	}
@@ -177,9 +170,8 @@ public class ModuleController extends BaseController {
         } catch (Exception e) {
             return R.error();
         }
-        ExcelUtils et;
         try {
-            et = new ExcelUtils(file.getInputStream());
+            ExcelUtils et = new ExcelUtils(file.getInputStream());
             List<String> titleList = et.read(0,0,1).get(0);
             excelFieldService.remove(fileName);
             for(String title : titleList){
@@ -194,5 +186,40 @@ public class ModuleController extends BaseController {
         }
         return R.ok().put("fileName",fileName);
     }
+
+    @ResponseBody
+    @GetMapping("/download/{moduleId}")
+    void download(@PathVariable("moduleId") Long moduleId, HttpServletResponse response){
+        try {
+            ModuleDO moduleDO = moduleService.get(moduleId);
+            String path = bootdoConfig.getUploadPath()+"/modules/" + moduleDO.getUrl();
+            // path是指欲下载的文件的路径。
+            File file = new File(path);
+            // 取得文件名。
+            String filename = file.getName();
+            // 取得文件的后缀名。
+            String ext = filename.substring(filename.lastIndexOf(".") + 1).toUpperCase();
+
+            // 以流的形式下载文件。
+            InputStream fis = new BufferedInputStream(new FileInputStream(path));
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            fis.close();
+            // 清空response
+            response.reset();
+            // 设置response的Header
+            response.addHeader("Content-Disposition", "attachment;filename=" + new String(filename.getBytes()));
+            response.addHeader("Content-Length", "" + file.length());
+            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            toClient.write(buffer);
+            toClient.flush();
+            toClient.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
 
 }

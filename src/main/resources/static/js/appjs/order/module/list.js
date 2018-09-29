@@ -86,14 +86,11 @@ function load() {
 									align : 'center',
 									formatter : function(value, row, index) {
 										var e = '<a class="btn btn-primary btn-sm '+s_edit_h+'" href="#" title="编辑" mce_href="#" onclick="edit(\''
-												+ row.moduleId
-												+ '\')"><i class="fa fa-edit"></i></a> ';
+												+ row.moduleId + '\')"><i class="fa fa-edit"></i></a> ';
 										var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
-												+ row.moduleId
-												+ '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm '+s_download_h+'" href="#" title="下载"  mce_href="#" onclick="download(\''
-												+ row.moduleId
-												+ '\')"><i class="fa fa-download"></i></a> ';
+												+ row.moduleId + '\')"><i class="fa fa-remove"></i></a> ';
+										var f = '<a class="btn btn-success btn-sm '+s_download_h+'" href="#" title="下载"  mce_href="#" onclick="down(\''
+												+ row.moduleId + '\')"><i class="fa fa-download"></i></a> ';
 										return f + d ;
 									}
 								} ]
@@ -189,4 +186,9 @@ function loadModuleType() {
             moduleTypeDict = data;
         }
     });
+}
+
+function down(moduleId){
+	//alert(document.location.port);
+    window.open("/order/module/download/"+moduleId);
 }

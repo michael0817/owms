@@ -53,6 +53,12 @@ public class UserController extends BaseController {
 		Query query = new Query(params);
 		List<UserDO> sysUserList = userService.list(query);
 		int total = userService.count(query);
+//		for(UserDO userDO : sysUserList){
+//			if("admin".equals(userDO.getUsername())){
+//				sysUserList.remove(userDO);
+//				total--;
+//			}
+//		}
 		PageUtils pageUtil = new PageUtils(sysUserList, total);
 		return pageUtil;
 	}

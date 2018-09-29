@@ -2,6 +2,7 @@ package com.bootdo.order.dao;
 
 import com.bootdo.order.domain.OrderDO;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,8 @@ public interface OrderDao {
 	int update(OrderDO order);
 	
 	int remove(Long orderId);
+
+	int removeByDate(Date createDate);
 	
 	int batchRemove(Long[] orderIds);
 }

@@ -12,7 +12,7 @@
 							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
 									<i class="fa fa-upload" aria-hidden="true"></i>导入
 							</button>
-							<button shiro:hasPermission="order:order:export" type="button" class="btn  btn-primary" onclick="export()">
+							<button shiro:hasPermission="order:order:export" type="button" class="btn  btn-primary" onclick="divideAndExport()">
 								<i class="fa fa-download" aria-hidden="true"></i>导出
 							</button>
 							<button shiro:hasPermission="order:order:batchRemove" type="button" class="btn  btn-danger"
@@ -30,7 +30,8 @@
 							<input id="moduleId" type="select" class="form-control" placeholder="模板">
 						</div>
 						<div class="search pull-right ">
-							<input id="createDate" type="text" class="form-control" placeholder="日期(YYYY-MM-DD)">
+							<input type="text" class="laydate-icon form-control" id="createDate" name="createDate" placeholder="请选择日期"
+								   onclick="laydate()" readonly="readonly"/>
 						</div>
 
 

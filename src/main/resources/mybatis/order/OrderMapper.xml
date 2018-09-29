@@ -4,19 +4,25 @@
 <mapper namespace="com.bootdo.order.dao.OrderDao">
 
 	<select id="get" resultType="com.bootdo.order.domain.OrderDO">
-		select `order_id`,`module_id`,`consignee_name`,`consignee_phone`,`consignee_country`,`province`,`city`,`doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list where order_id = #{value}
+		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,``doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list where order_id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.order.domain.OrderDO">
-		select `order_id`,`module_id`,`consignee_name`,`consignee_phone`,`consignee_country`,`province`,`city`,`doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list
+		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list
         <where>  
 		  		  <if test="orderId != null and orderId != ''"> and order_id = #{orderId} </if>
 		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
+		  		  <if test="warehouseCode != null and warehouseCode != ''"> and warehouse_code = #{warehouseCode} </if>
+		  		  <if test="deliveryStyle != null and deliveryStyle != ''"> and delivery_style = #{deliveryStyle} </if>
+		  		  <if test="insuranceType != null and insuranceType != ''"> and insurance_type = #{insuranceType} </if>
+		  		  <if test="insuranceValue != null and insuranceValue != ''"> and insurance_value = #{insuranceValue} </if>
 		  		  <if test="consigneeName != null and consigneeName != ''"> and consignee_name = #{consigneeName} </if>
 		  		  <if test="consigneePhone != null and consigneePhone != ''"> and consignee_phone = #{consigneePhone} </if>
+				  <if test="consigneeId != null and consigneePhone != ''"> and consignee_phone = #{consigneeId} </if>
 		  		  <if test="consigneeCountry != null and consigneeCountry != ''"> and consignee_country = #{consigneeCountry} </if>
 		  		  <if test="province != null and province != ''"> and province = #{province} </if>
 		  		  <if test="city != null and city != ''"> and city = #{city} </if>
+				  <if test="street != null and street != ''"> and street = #{street} </if>
 		  		  <if test="doorplate != null and doorplate != ''"> and doorplate = #{doorplate} </if>
 		  		  <if test="zipCode != null and zipCode != ''"> and zip_code = #{zipCode} </if>
 		  		  <if test="sku != null and sku != ''"> and sku = #{sku} </if>
@@ -41,11 +47,17 @@
 		 <where>  
 		  		  <if test="orderId != null and orderId != ''"> and order_id = #{orderId} </if>
 		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
+		  		  <if test="warehouseCode != null and warehouseCode != ''"> and warehouse_code = #{warehouseCode} </if>
+		  		  <if test="deliveryStyle != null and deliveryStyle != ''"> and delivery_style = #{deliveryStyle} </if>
+		  		  <if test="insuranceType != null and insuranceType != ''"> and insurance_type = #{insuranceType} </if>
+		  		  <if test="insuranceValue != null and insuranceValue != ''"> and insurance_value = #{insuranceValue} </if>
 		  		  <if test="consigneeName != null and consigneeName != ''"> and consignee_name = #{consigneeName} </if>
 		  		  <if test="consigneePhone != null and consigneePhone != ''"> and consignee_phone = #{consigneePhone} </if>
+			 	  <if test="consigneeId != null and consigneePhone != ''"> and consignee_phone = #{consigneeId} </if>
 		  		  <if test="consigneeCountry != null and consigneeCountry != ''"> and consignee_country = #{consigneeCountry} </if>
 		  		  <if test="province != null and province != ''"> and province = #{province} </if>
 		  		  <if test="city != null and city != ''"> and city = #{city} </if>
+			 	  <if test="street != null and street != ''"> and street = #{street} </if>
 		  		  <if test="doorplate != null and doorplate != ''"> and doorplate = #{doorplate} </if>
 		  		  <if test="zipCode != null and zipCode != ''"> and zip_code = #{zipCode} </if>
 		  		  <if test="sku != null and sku != ''"> and sku = #{sku} </if>
@@ -59,11 +71,17 @@
 		(
 			`order_id`, 
 			`module_id`, 
+			`warehouse_code`, 
+			`delivery_style`, 
+			`insurance_type`, 
+			`insurance_value`, 
 			`consignee_name`, 
-			`consignee_phone`, 
+			`consignee_phone`,
+			`consignee_id`,
 			`consignee_country`, 
 			`province`, 
-			`city`, 
+			`city`,
+			`street`,
 			`doorplate`, 
 			`zip_code`, 
 			`sku`, 
@@ -74,11 +92,17 @@
 		(
 			#{orderId}, 
 			#{moduleId}, 
+			#{warehouseCode}, 
+			#{deliveryStyle}, 
+			#{insuranceType}, 
+			#{insuranceValue}, 
 			#{consigneeName}, 
-			#{consigneePhone}, 
+			#{consigneePhone},
+			#{consigneeId},
 			#{consigneeCountry}, 
 			#{province}, 
-			#{city}, 
+			#{city},
+			#{street},
 			#{doorplate}, 
 			#{zipCode}, 
 			#{sku}, 
@@ -91,11 +115,17 @@
 		update order_list 
 		<set>
 			<if test="moduleId != null">`module_id` = #{moduleId}, </if>
+			<if test="warehouseCode != null">`warehouse_code` = #{warehouseCode}, </if>
+			<if test="deliveryStyle != null">`delivery_style` = #{deliveryStyle}, </if>
+			<if test="insuranceType != null">`insurance_type` = #{insuranceType}, </if>
+			<if test="insuranceValue != null">`insurance_value` = #{insuranceValue}, </if>
 			<if test="consigneeName != null">`consignee_name` = #{consigneeName}, </if>
 			<if test="consigneePhone != null">`consignee_phone` = #{consigneePhone}, </if>
+			<if test="consigneeId != null and consigneePhone != ''"> and consignee_phone = #{consigneeId} </if>
 			<if test="consigneeCountry != null">`consignee_country` = #{consigneeCountry}, </if>
 			<if test="province != null">`province` = #{province}, </if>
 			<if test="city != null">`city` = #{city}, </if>
+			<if test="street != null and street != ''"> and street = #{street} </if>
 			<if test="doorplate != null">`doorplate` = #{doorplate}, </if>
 			<if test="zipCode != null">`zip_code` = #{zipCode}, </if>
 			<if test="sku != null">`sku` = #{sku}, </if>
@@ -107,6 +137,10 @@
 	
 	<delete id="remove">
 		delete from order_list where order_id = #{value}
+	</delete>
+
+	<delete id="removeByDate">
+		delete from order_list where create_date = #{value}
 	</delete>
 	
 	<delete id="batchRemove">

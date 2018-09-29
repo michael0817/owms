@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface FieldMappingService {
 	
-	FieldMappingDO get(Integer moduleId);
+	FieldMappingDO get(Long moduleId);
 	
 	List<FieldMappingDO> list(Map<String, Object> map);
 	
@@ -24,7 +24,7 @@ public interface FieldMappingService {
 	
 	int update(FieldMappingDO fieldMapping);
 	
-	int remove(Integer moduleId);
+	int remove(Long moduleId);
 	
-	int batchRemove(Integer[] moduleIds);
+	int batchRemove(Long[] moduleIds);
 }

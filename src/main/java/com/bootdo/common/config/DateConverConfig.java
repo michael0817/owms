@@ -20,6 +20,9 @@ public class DateConverConfig {
         return new Converter<String, Date>() {
             @Override
             public Date convert(String source) {
+                if(source == null || "".equals(source)){
+                    return null;
+                }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 Date date = null;
                 try {
