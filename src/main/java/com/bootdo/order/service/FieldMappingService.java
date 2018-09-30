@@ -27,4 +27,8 @@ public interface FieldMappingService {
 	int remove(Long moduleId);
 	
 	int batchRemove(Long[] moduleIds);
+
+	List<Map<String,Object>>  getOrderMapping(Long moduleId);
+
+	List<Map<String,Object>>  getExpressMapping(Long moduleId);
 }

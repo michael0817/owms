@@ -1,8 +1,8 @@
 $().ready(function() {
     laydate({
-        elem: '#createDate'
+        elem: '#importDate'
     });
-    $('#createDate').val(laydate.now());
+    $('#importDate').val(laydate.now());
 });
 
 // $.validator.setDefaults({

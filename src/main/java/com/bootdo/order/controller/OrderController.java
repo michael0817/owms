@@ -1,40 +1,30 @@
 package com.bootdo.order.controller;
 
-import java.beans.PropertyDescriptor;
-import java.io.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import com.alibaba.fastjson.JSONArray;
 import com.bootdo.common.config.BootdoConfig;
 import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.domain.DictDO;
 import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.*;
-import com.bootdo.order.domain.FieldMappingDO;
 import com.bootdo.order.domain.ModuleDO;
 import com.bootdo.order.domain.OrderDO;
 import com.bootdo.order.service.FieldMappingService;
 import com.bootdo.order.service.ModuleService;
+import com.bootdo.order.service.OrderService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.streaming.SXSSFRow;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import com.bootdo.order.service.OrderService;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 订单模板
@@ -58,9 +48,6 @@ public class OrderController extends BaseController {
 
 	@Autowired
     private DictService dictService;
-
-	@Autowired
-    private JdbcTemplate jdbcTemplate;
 
     @Autowired
     private BootdoConfig bootdoConfig;
@@ -99,7 +86,7 @@ public class OrderController extends BaseController {
 	@RequiresPermissions("order:order:edit")
 	String edit(@PathVariable("orderId") Long orderId,Model model){
 		OrderDO list = orderService.get(orderId);
-		model.addAttribute("list", list);
+		model.addAttribute("order", list);
 	    return "order/order/edit";
 	}
 	
@@ -109,8 +96,8 @@ public class OrderController extends BaseController {
 	@ResponseBody
 	@PostMapping("/save")
 	@RequiresPermissions("order:order:import")
-	public R save( OrderDO list){
-		if(orderService.save(list)>0){
+	public R save( OrderDO order){
+		if(orderService.save(order)>0){
 			return R.ok();
 		}
 		return R.error();
@@ -121,8 +108,8 @@ public class OrderController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/update")
 	@RequiresPermissions("order:order:edit")
-	public R update( OrderDO list){
-		orderService.update(list);
+	public R update( OrderDO order){
+		orderService.update(order);
 		return R.ok();
 	}
 	
@@ -153,67 +140,79 @@ public class OrderController extends BaseController {
 	@ResponseBody
 	@PostMapping("/import")
     @RequiresPermissions("order:order:import")
-	R mergeAndImport(@RequestParam("createDate") Date createDate, @RequestParam("file") MultipartFile[] file) {
+	R upload(@RequestParam("createDate") Date createDate, @RequestParam("file") MultipartFile[] file) {
 	    List<String> failedList = new ArrayList<String>();
 	    List<String> ignoreList = new ArrayList<String>();
         List<String> successList = new ArrayList<String>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd",Locale.CHINA);
-	    String date = createDate==null?sdf.format(new Date()):sdf.format(createDate);
-        List<OrderDO> totalOrderList = new ArrayList<OrderDO>();
-        for(MultipartFile singleFile : file){
-	        if(singleFile.getOriginalFilename().endsWith(".xls")||singleFile.getOriginalFilename().endsWith(".xlsx")){
-                String name[] = singleFile.getOriginalFilename().split("\\\\");
-                if(name.length<=1) {
-                    name = singleFile.getOriginalFilename().split("/");
-                }
-                if(!singleFile.getOriginalFilename().contains(date)) {
-                    ignoreList.add(name[1]);
-                    continue;
-                }
-                List<ModuleDO> moduleList = moduleService.list(new HashMap());
-                boolean matchFlag = false;
-                for(ModuleDO moduleDO : moduleList){
-                    if(name.length == 2) {
-                        if(!name[1].startsWith(moduleDO.getPrefix())) {
-                            continue;
+        List<String> failedOrderList = new ArrayList<String>();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.CHINA);
+            String date = createDate == null ? sdf.format(new Date()) : sdf.format(createDate);
+            List<OrderDO> totalOrderList = new ArrayList<OrderDO>();
+            for (MultipartFile singleFile : file) {
+                if (singleFile.getOriginalFilename().endsWith(".xls") || singleFile.getOriginalFilename().endsWith(".xlsx")) {
+                    String name[] = singleFile.getOriginalFilename().split("\\\\");
+                    if (name.length <= 1) {
+                        name = singleFile.getOriginalFilename().split("/");
+                    }
+                    if (!singleFile.getOriginalFilename().contains(date)) {
+                        ignoreList.add(name[1]);
+                        continue;
+                    }
+                    Map moduleMap = new HashMap();
+                    moduleMap.put("moduleType", 1);
+                    List<ModuleDO> moduleList = moduleService.list(moduleMap);
+                    boolean matchFlag = false;
+                    for (ModuleDO moduleDO : moduleList) {
+                        if (name.length == 2) {
+                            if (!name[1].startsWith(moduleDO.getPrefix())) {
+                                continue;
+                            }
+                        }
+                        try {
+                            List<OrderDO> orderList = readOrders(singleFile.getInputStream(), moduleDO.getModuleId(), createDate);
+                            totalOrderList.addAll(orderList);
+                            matchFlag = true;
+                            successList.add(name[1]);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            failedList.add(name[1]);
                         }
                     }
-                    try {
-                        List<OrderDO> orderList = readOrders(singleFile.getInputStream(),moduleDO.getModuleId(),createDate);
-                            totalOrderList.addAll(orderList);
-                        matchFlag=true;
-                        successList.add(name[1]);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        failedList.add(name[1]);
+                    if (!matchFlag) {
+                        ignoreList.add(name[1]);
                     }
                 }
-                if(!matchFlag){
-                    ignoreList.add(name[1]);
+                orderService.removeByDate(createDate == null ? new Date() : createDate);
+                for (OrderDO orderDO : totalOrderList) {
+                    try {
+                        orderService.save(orderDO);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        failedOrderList.add(orderDO.getOrderId());
+                    }
                 }
             }
-            orderService.removeByDate(createDate==null?new Date():createDate);
-            for(OrderDO orderDO : totalOrderList){
-                orderService.save(orderDO);
-            }
+            R r = R.ok("导入完成");
+            r.put("successList", JSONArray.toJSONString(successList));
+            r.put("ignoreList", JSONArray.toJSONString(ignoreList));
+            r.put("failedList", JSONArray.toJSONString(failedList));
+            r.put("failedOrderList", JSONArray.toJSONString(failedOrderList));
+            return r;
+        }catch(Exception e){
+            e.printStackTrace();
+            return R.error("导入失败:请联系系统管理员");
         }
-        R r = R.ok();
-        r.put("successList", JSONArray.toJSONString(successList));
-        r.put("ignoreList", JSONArray.toJSONString(ignoreList));
-        r.put("failedList", JSONArray.toJSONString(failedList));
-        return r;
+
     }
 
-	private List<Map<String,Object>>  getExcelFieldMapping(Long moduleId){
-        List<Map<String,Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
-                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId,"order_module_2"});
-        return excelFieldMapList;
-    }
+
+
     private List<OrderDO> readOrders(InputStream is, Long moduleId, Date createDate){
         List<OrderDO> orderList = new ArrayList<OrderDO>();
 	    try {
             ExcelUtils et = new ExcelUtils(is);
-            List<Map<String,Object>>  excelFieldMapList = getExcelFieldMapping(moduleId);
+            List<Map<String,Object>>  excelFieldMapList = fieldMappingService.getOrderMapping(moduleId);
             List<String> titleList = et.read(0,0,1).get(0);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();
             for(Map<String,Object> map : excelFieldMapList){
@@ -264,8 +263,7 @@ public class OrderController extends BaseController {
                 }
                 district = address.substring(0,index+1);
                 orderDO.setDoorplate(district);
-                orderDO.setZipCode(ZipCodeUtils.getZipCode(province,city));
-                orderDO.setInsuranceType("无保");
+                orderDO.setZipCode(ZipCodeUtils.getZipCode(orderDO.getProvince(),orderDO.getCity()));
                 orderDO.setConsigneeCountry("CN");
 //                orderService.save(orderDO);
                 orderList.add(orderDO);
@@ -326,7 +324,7 @@ public class OrderController extends BaseController {
         try {
             ExcelUtils et = new ExcelUtils(moduleFile);
             workbook = et.getWorkbook();
-            List<Map<String,Object>>  excelFieldMapList = getExcelFieldMapping(moduleId);
+            List<Map<String,Object>>  excelFieldMapList = fieldMappingService.getOrderMapping(moduleId);
             List<String> titleList = et.read(0,0,1).get(0);
             Row firstRow = workbook.getSheetAt(0).getRow(1);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();

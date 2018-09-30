@@ -48,7 +48,7 @@ public class OrderDO implements Serializable {
 	//SKU
 	private String sku;
 	//数量
-	private String quntity;
+	private String quantity;
 	//创建日期
 	private Date createDate;
 
@@ -243,14 +243,14 @@ public class OrderDO implements Serializable {
 	/**
 	 * 设置：数量
 	 */
-	public void setQuntity(String quntity) {
-		this.quntity = quntity;
+	public void setQuantity(String quantity) {
+		this.quantity = quantity;
 	}
 	/**
 	 * 获取：数量
 	 */
-	public String getQuntity() {
-		return quntity;
+	public String getQuantity() {
+		return quantity;
 	}
 	/**
 	 * 设置：创建日期

@@ -268,7 +268,7 @@ function batchSave(){
                 row["businessFieldName"]=$(e).text();
             }else if(j==1){
                 var fieldName = $(e).find('option:selected').text();
-                if(fieldName != '--空白--' && fileName != '--自动填充--'){
+                if(fieldName != '--空白--' && fieldName != '--自动填充--'){
                     row["excelFieldName"]=$(e).find('option:selected').text();
                 }else{
                     row["excelFieldName"]='';

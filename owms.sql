@@ -27,9 +27,9 @@ CREATE TABLE `order_list` (
   `doorplate` varchar(200) DEFAULT NULL COMMENT '门牌号/区',
   `zip_code` varchar(200) DEFAULT NULL COMMENT '邮编',
   `sku` varchar(200) DEFAULT NULL COMMENT 'SKU',
-  `quntity` varchar(200) DEFAULT NULL COMMENT '数量',
+  `quantity` varchar(200) DEFAULT NULL COMMENT '数量',
   `create_date` date NOT NULL COMMENT '创建日期',
-  PRIMARY KEY (`order_id`),
+  PRIMARY KEY (`order_id`,`sku`),
   INDEX (`create_date`,`module_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='订单详情';
 
@@ -48,3 +48,14 @@ CREATE TABLE `order_excel_fields`(
   `module_name` varchar(200) NOT NULL COMMENT '模板文件名',
   `excel_field_name` varchar(200) DEFAULT NULL COMMENT 'EXCEL字段名'
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='Excel模板字段';
+
+DROP TABLE IF EXISTS `express_list`;
+CREATE TABLE `express_list` (
+  `order_id` varchar(30) NOT NULL COMMENT '订单编号',
+  `sku` varchar(200) NOT NULL COMMENT 'SKU',
+  `express_id` varchar(30) NOT NULL COMMENT '运单号',
+  `express_company` varchar(200) DEFAULT NULL COMMENT '物流公司',
+  `create_date` date NOT NULL COMMENT '创建日期',
+  PRIMARY KEY (`order_id`, `sku`, `express_id`),
+  INDEX (`create_date`,`order_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='运单详情';

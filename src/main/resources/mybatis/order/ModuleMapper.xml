@@ -69,7 +69,7 @@
 	</update>
 	
 	<delete id="remove">
-		delete from order_module where module_id = #{value}
+		delete from order_module where module_id = #{moduleId}
 	</delete>
 	
 	<delete id="batchRemove">

@@ -56,7 +56,7 @@
 	</update>
 	
 	<delete id="remove">
-		delete from order_excel_fields where module_name = #{value}
+		delete from order_excel_fields where module_name = #{moduleName}
 	</delete>
 	
 	<delete id="batchRemove">

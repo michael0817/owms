@@ -1,11 +1,11 @@
 
 var prefix = "/order/order"
 $(function() {
-	load();
     laydate({
         elem: '#createDate'
     });
     $('#createDate').val(laydate.now());
+    load();
 });
 
 function load() {
@@ -116,7 +116,7 @@ function load() {
 									title : 'SKU' 
 								},
 								{
-									field : 'quntity', 
+									field : 'quantity',
 									title : '数量' 
 								},
 								{

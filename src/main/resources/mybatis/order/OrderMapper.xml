@@ -4,11 +4,11 @@
 <mapper namespace="com.bootdo.order.dao.OrderDao">
 
 	<select id="get" resultType="com.bootdo.order.domain.OrderDO">
-		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,``doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list where order_id = #{value}
+		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,``doorplate`,`zip_code`,`sku`,`quantity`,`create_date` from order_list where order_id = #{value}
 	</select>
 
 	<select id="list" resultType="com.bootdo.order.domain.OrderDO">
-		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quntity`,`create_date` from order_list
+		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quantity`,`create_date` from order_list
         <where>  
 		  		  <if test="orderId != null and orderId != ''"> and order_id = #{orderId} </if>
 		  		  <if test="moduleId != null and moduleId != ''"> and module_id = #{moduleId} </if>
@@ -26,7 +26,7 @@
 		  		  <if test="doorplate != null and doorplate != ''"> and doorplate = #{doorplate} </if>
 		  		  <if test="zipCode != null and zipCode != ''"> and zip_code = #{zipCode} </if>
 		  		  <if test="sku != null and sku != ''"> and sku = #{sku} </if>
-		  		  <if test="quntity != null and quntity != ''"> and quntity = #{quntity} </if>
+		  		  <if test="quantity != null and quantity != ''"> and quantity = #{quantity} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
 		  		</where>
         <choose>
@@ -61,7 +61,7 @@
 		  		  <if test="doorplate != null and doorplate != ''"> and doorplate = #{doorplate} </if>
 		  		  <if test="zipCode != null and zipCode != ''"> and zip_code = #{zipCode} </if>
 		  		  <if test="sku != null and sku != ''"> and sku = #{sku} </if>
-		  		  <if test="quntity != null and quntity != ''"> and quntity = #{quntity} </if>
+		  		  <if test="quantity != null and quantity != ''"> and quantity = #{quantity} </if>
 		  		  <if test="createDate != null and createDate != ''"> and create_date = #{createDate} </if>
 		  		</where>
 	</select>
@@ -85,7 +85,7 @@
 			`doorplate`, 
 			`zip_code`, 
 			`sku`, 
-			`quntity`, 
+			`quantity`, 
 			`create_date`
 		)
 		values
@@ -106,7 +106,7 @@
 			#{doorplate}, 
 			#{zipCode}, 
 			#{sku}, 
-			#{quntity}, 
+			#{quantity}, 
 			#{createDate}
 		)
 	</insert>
@@ -129,18 +129,18 @@
 			<if test="doorplate != null">`doorplate` = #{doorplate}, </if>
 			<if test="zipCode != null">`zip_code` = #{zipCode}, </if>
 			<if test="sku != null">`sku` = #{sku}, </if>
-			<if test="quntity != null">`quntity` = #{quntity}, </if>
+			<if test="quantity != null">`quantity` = #{quantity}, </if>
 			<if test="createDate != null">`create_date` = #{createDate}</if>
 		</set>
 		where order_id = #{orderId}
 	</update>
 	
 	<delete id="remove">
-		delete from order_list where order_id = #{value}
+		delete from order_list where order_id = #{orderId}
 	</delete>
 
 	<delete id="removeByDate">
-		delete from order_list where create_date = #{value}
+		delete from order_list where create_date = #{createDate}
 	</delete>
 	
 	<delete id="batchRemove">

@@ -58,7 +58,7 @@ layui.use('upload', function () {
     var upload = layui.upload;
     //执行实例
     var uploadInst = upload.render({
-        elem: '#uploadModule', //绑定元素
+        elem: '#file', //绑定元素
         url: '/order/module/upload', //上传接口
         size: 1000,
         accept: 'file',
