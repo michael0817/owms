@@ -76,12 +76,15 @@
 
 <!-- jQuery Validation plugin javascript-->
 <script src="/js/ajax-util.js"></script>
-<script src="/js/plugins/validate/jquery.validate.min.js" th:src="@{/js/plugins/validate/jquery.validate.min.js}"></script>
+<script src="/js/plugins/validate/jquery.validate.min.js"
+        th:src="@{/js/plugins/validate/jquery.validate.min.js}"></script>
 <script src="/js/plugins/validate/messages_zh.min.js" th:src="@{/js/plugins/validate/messages_zh.min.js}"></script>
 <script src="/js/plugins/layer/layer.min.js" th:src="@{/js/plugins/layer/layer.min.js}"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-        $("#login").on('click',function(){$("#signupForm").submit();});
+        $("#login").on('click', function () {
+            $("#signupForm").submit();
+        });
         validateRule();
     });
 
@@ -94,12 +97,12 @@
     function login() {
         $.ajax({
             type: "POST",
-            url: ctx+"login",
+            url: ctx + "login",
             data: $('#signupForm').serialize(),
             success: function (r) {
-                 if (r.code == 0) {
+                if (r.code == 0) {
                     var index = layer.load(1, {
-                        shade: [0.1,'#fff'] //0.1透明度的白色背景
+                        shade: [0.1, '#fff'] //0.1透明度的白色背景
                     });
                     parent.location.href = '/index';
                 } else {

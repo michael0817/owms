@@ -1,19 +1,5 @@
 package com.bootdo.oa.service.impl;
 
-import com.bootdo.system.domain.UserDO;
-import com.bootdo.system.service.SessionService;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.DateUtils;
 import com.bootdo.common.utils.PageUtils;
@@ -24,6 +10,20 @@ import com.bootdo.oa.domain.NotifyDTO;
 import com.bootdo.oa.domain.NotifyRecordDO;
 import com.bootdo.oa.service.NotifyService;
 import com.bootdo.system.dao.UserDao;
+import com.bootdo.system.domain.UserDO;
+import com.bootdo.system.service.SessionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class NotifyServiceImpl implements NotifyService {
@@ -79,7 +79,7 @@ public class NotifyServiceImpl implements NotifyService {
         }
         recordDao.batchSave(records);
         //给在线用户发送通知
-        ThreadPoolExecutor executor = new ThreadPoolExecutor(1,1,0, TimeUnit.MILLISECONDS,new LinkedBlockingDeque<>());
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(1, 1, 0, TimeUnit.MILLISECONDS, new LinkedBlockingDeque<>());
         executor.execute(new Runnable() {
             @Override
             public void run() {

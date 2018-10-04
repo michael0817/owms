@@ -19,7 +19,8 @@ public class ActivitiUtils {
     TaskService taskService;
     @Autowired
     RuntimeService runtimeService;
-    public String getBusinessKeyByTaskId(String taskId){
+
+    public String getBusinessKeyByTaskId(String taskId) {
         Task task = taskService
                 .createTaskQuery()
                 .taskId(taskId)
@@ -31,7 +32,7 @@ public class ActivitiUtils {
         return pi.getBusinessKey();
     }
 
-    public Task getTaskByTaskId(String taskId){
+    public Task getTaskByTaskId(String taskId) {
         Task task = taskService
                 .createTaskQuery()
                 .taskId(taskId)

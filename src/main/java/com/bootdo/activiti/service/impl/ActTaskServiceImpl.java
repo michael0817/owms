@@ -9,7 +9,6 @@ import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -226,6 +225,7 @@ public class ActTaskServiceImpl implements ActTaskService {
 
     /**
      * 获取需要高亮的线
+     *
      * @param processDefinitionEntity
      * @param historicActivityInstances
      * @return

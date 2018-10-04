@@ -15,7 +15,7 @@ public class NotifyRecordDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     *  编号
+     * 编号
      */
     private Long id;
     //通知通告ID

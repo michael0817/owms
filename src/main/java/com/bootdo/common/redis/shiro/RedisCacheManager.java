@@ -4,14 +4,15 @@ package com.bootdo.common.redis.shiro;
  * @author bootdo 1992lcg@163.com
  * @version V1.0
  */
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
 import org.apache.shiro.cache.CacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class RedisCacheManager implements CacheManager {
 
@@ -31,6 +32,7 @@ public class RedisCacheManager implements CacheManager {
     /**
      * Returns the Redis session keys
      * prefix.
+     *
      * @return The prefix
      */
     public String getKeyPrefix() {
@@ -40,6 +42,7 @@ public class RedisCacheManager implements CacheManager {
     /**
      * Sets the Redis sessions key
      * prefix.
+     *
      * @param keyPrefix The prefix
      */
     public void setKeyPrefix(String keyPrefix) {

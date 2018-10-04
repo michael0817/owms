@@ -1,5 +1,8 @@
 package com.bootdo.common.service.impl;
 
+import com.bootdo.common.dao.DictDao;
+import com.bootdo.common.domain.DictDO;
+import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.StringUtils;
 import com.bootdo.system.domain.UserDO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-import com.bootdo.common.dao.DictDao;
-import com.bootdo.common.domain.DictDO;
-import com.bootdo.common.service.DictService;
 
 
 @Service

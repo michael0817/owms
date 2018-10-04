@@ -11,59 +11,60 @@ import java.util.List;
 import java.util.Map;
 
 
-
 @Service
 public class FieldMappingServiceImpl implements FieldMappingService {
-	@Autowired
-	private FieldMappingDao fieldMappingDao;
+    @Autowired
+    private FieldMappingDao fieldMappingDao;
 
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
-	@Override
-	public FieldMappingDO get(Long moduleId){
-		return fieldMappingDao.get(moduleId);
-	}
-	
-	@Override
-	public List<FieldMappingDO> list(Map<String, Object> map){ return fieldMappingDao.list(map); }
-	
-	@Override
-	public int count(Map<String, Object> map){
-		return fieldMappingDao.count(map);
-	}
-	
-	@Override
-	public int save(FieldMappingDO fieldMapping){
-		return fieldMappingDao.save(fieldMapping);
-	}
-	
-	@Override
-	public int update(FieldMappingDO fieldMapping){
-		return fieldMappingDao.update(fieldMapping);
-	}
-	
-	@Override
-	public int remove(Long moduleId){
-		return fieldMappingDao.remove(moduleId);
-	}
-	
-	@Override
-	public int batchRemove(Long[] moduleIds){
-		return fieldMappingDao.batchRemove(moduleIds);
-	}
+    @Override
+    public FieldMappingDO get(Long moduleId) {
+        return fieldMappingDao.get(moduleId);
+    }
 
-	@Override
-	public List<Map<String,Object>>  getOrderMapping(Long moduleId){
-		List<Map<String,Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
-				"where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId,"order_module_2"});
-		return excelFieldMapList;
-	}
+    @Override
+    public List<FieldMappingDO> list(Map<String, Object> map) {
+        return fieldMappingDao.list(map);
+    }
 
-	@Override
-	public List<Map<String,Object>>  getExpressMapping(Long moduleId){
-		List<Map<String,Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
-				"where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId,"order_module_3"});
-		return excelFieldMapList;
-	}
+    @Override
+    public int count(Map<String, Object> map) {
+        return fieldMappingDao.count(map);
+    }
+
+    @Override
+    public int save(FieldMappingDO fieldMapping) {
+        return fieldMappingDao.save(fieldMapping);
+    }
+
+    @Override
+    public int update(FieldMappingDO fieldMapping) {
+        return fieldMappingDao.update(fieldMapping);
+    }
+
+    @Override
+    public int remove(Long moduleId) {
+        return fieldMappingDao.remove(moduleId);
+    }
+
+    @Override
+    public int batchRemove(Long[] moduleIds) {
+        return fieldMappingDao.batchRemove(moduleIds);
+    }
+
+    @Override
+    public List<Map<String, Object>> getOrderMapping(Long moduleId) {
+        List<Map<String, Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
+                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId, "order_module_2"});
+        return excelFieldMapList;
+    }
+
+    @Override
+    public List<Map<String, Object>> getExpressMapping(Long moduleId) {
+        List<Map<String, Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
+                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId, "order_module_3"});
+        return excelFieldMapList;
+    }
 }

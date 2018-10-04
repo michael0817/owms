@@ -28,7 +28,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/act/salary")
-public class SalaryController extends BaseController{
+public class SalaryController extends BaseController {
     @Autowired
     private SalaryService salaryService;
     @Autowired
@@ -98,7 +98,7 @@ public class SalaryController extends BaseController{
             salary.setLeadText(salary.getTaskComment());
         } else if ("audit4".equals(taskKey)) {
             salary.setMainLeadText(salary.getTaskComment());
-        } else if("apply_end".equals(salary.getTaskComment())){
+        } else if ("apply_end".equals(salary.getTaskComment())) {
             //流程完成，兑现
         }
         salaryService.update(salary);

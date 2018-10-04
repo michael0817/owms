@@ -29,7 +29,7 @@ import java.util.zip.ZipInputStream;
 
 @RequestMapping("activiti/process")
 @RestController
-public class ProcessController extends BaseController{
+public class ProcessController extends BaseController {
 
     @Autowired
     private RepositoryService repositoryService;
@@ -51,7 +51,7 @@ public class ProcessController extends BaseController{
                 .listPage(offset, limit);
         int count = (int) repositoryService.createProcessDefinitionQuery().count();
         List<Object> list = new ArrayList<>();
-        for(ProcessDefinition processDefinition: processDefinitions){
+        for (ProcessDefinition processDefinition : processDefinitions) {
             list.add(new ProcessVO(processDefinition));
         }
         PageUtils pageUtils = new PageUtils(list, count);
@@ -125,17 +125,17 @@ public class ProcessController extends BaseController{
         org.activiti.engine.repository.Model modelData = null;
         try {
             modelData = processService.convertToModel(procDefId);
-            return R.ok( "转换模型成功，模型ID=" + modelData.getId());
+            return R.ok("转换模型成功，模型ID=" + modelData.getId());
         } catch (Exception e) {
             e.printStackTrace();
-            return R.ok( "转换模型失败");
+            return R.ok("转换模型失败");
         }
 
     }
 
     @RequestMapping(value = "/resource/read/{xml}/{id}")
     public void resourceRead(@PathVariable("xml") String resType, @PathVariable("id") String id, HttpServletResponse response) throws Exception {
-        InputStream resourceAsStream = processService.resourceRead(id,resType);
+        InputStream resourceAsStream = processService.resourceRead(id, resType);
         byte[] b = new byte[1024];
         int len = -1;
         while ((len = resourceAsStream.read(b, 0, 1024)) != -1) {
@@ -144,20 +144,21 @@ public class ProcessController extends BaseController{
     }
 
     @PostMapping("/remove")
-    public R remove(String id){
+    public R remove(String id) {
         if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
             return R.error(1, "演示系统不允许修改,完整体验请部署程序");
         }
-        repositoryService.deleteDeployment(id,true);
+        repositoryService.deleteDeployment(id, true);
         return R.ok();
     }
+
     @PostMapping("/batchRemove")
     public R batchRemove(@RequestParam("ids[]") String[] ids) {
         if (Constant.DEMO_ACCOUNT.equals(getUsername())) {
             return R.error(1, "演示系统不允许修改,完整体验请部署程序");
         }
         for (String id : ids) {
-            repositoryService.deleteDeployment(id,true);
+            repositoryService.deleteDeployment(id, true);
         }
         return R.ok();
     }

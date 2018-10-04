@@ -3,7 +3,6 @@ package com.bootdo.common.exception;
 import com.bootdo.common.config.Constant;
 import com.bootdo.common.domain.LogDO;
 import com.bootdo.common.service.LogService;
-import com.bootdo.common.utils.ExceptionUtils;
 import com.bootdo.common.utils.HttpServletUtils;
 import com.bootdo.common.utils.R;
 import com.bootdo.common.utils.ShiroUtils;
@@ -12,14 +11,11 @@ import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 
 /**
@@ -73,7 +69,7 @@ public class BDExceptionHandler {
         logDO.setMethod(request.getRequestURL().toString());
         logDO.setParams(e.toString());
         UserDO current = ShiroUtils.getUser();
-        if(null!=current){
+        if (null != current) {
             logDO.setUserId(current.getUserId());
             logDO.setUsername(current.getUsername());
         }

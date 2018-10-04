@@ -7,7 +7,6 @@ import org.springframework.core.convert.converter.Converter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.zip.DataFormatException;
 
 /**
  * @author gaoyuzhe
@@ -20,7 +19,7 @@ public class DateConverConfig {
         return new Converter<String, Date>() {
             @Override
             public Date convert(String source) {
-                if(source == null || "".equals(source)){
+                if (source == null || "".equals(source)) {
                     return null;
                 }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

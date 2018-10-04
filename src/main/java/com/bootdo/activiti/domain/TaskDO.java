@@ -6,10 +6,10 @@ import java.util.Map;
  * @author bootdo 1992lcg@163.com
  */
 public class TaskDO {
-    private  String taskId;
+    private String taskId;
     private String taskComment;
     private String taskPass;
-    private Map<String,Object> vars;
+    private Map<String, Object> vars;
 
     public String getTaskId() {
         return taskId;

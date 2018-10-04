@@ -89,7 +89,7 @@ function load() {
 												+ row.moduleId + '\')"><i class="fa fa-edit"></i></a> ';
 										var d = '<a class="btn btn-warning btn-sm '+s_remove_h+'" href="#" title="删除"  mce_href="#" onclick="remove(\''
 												+ row.moduleId + '\')"><i class="fa fa-remove"></i></a> ';
-										var f = '<a class="btn btn-success btn-sm '+s_download_h+'" href="#" title="下载"  mce_href="#" onclick="download(\''
+										var f = '<a class="btn btn-success btn-sm '+s_download_h+'" href="#" title="下载"  mce_href="#" onclick="down(\''
 												+ row.moduleId + '\')"><i class="fa fa-download"></i></a> ';
 										return f + d ;
 									}
@@ -188,6 +188,6 @@ function loadModuleType() {
     });
 }
 
-function download(moduleId){
+function down(moduleId){
     window.open("/order/module/download/"+moduleId);
 }

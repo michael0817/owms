@@ -1,4 +1,5 @@
 package com.bootdo.common.config;
+
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.support.http.StatViewServlet;
 import com.alibaba.druid.support.http.WebStatFilter;
@@ -117,15 +118,16 @@ public class DruidDBConfig {
         return reg;
     }
 
-    @Bean public FilterRegistrationBean filterRegistrationBean() {
+    @Bean
+    public FilterRegistrationBean filterRegistrationBean() {
         FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(new WebStatFilter());
         filterRegistrationBean.addUrlPatterns("/*");
         filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
         filterRegistrationBean.addInitParameter("profileEnable", "true");
-        filterRegistrationBean.addInitParameter("principalCookieName","USER_COOKIE");
-        filterRegistrationBean.addInitParameter("principalSessionName","USER_SESSION");
-        filterRegistrationBean.addInitParameter("DruidWebStatFilter","/*");
+        filterRegistrationBean.addInitParameter("principalCookieName", "USER_COOKIE");
+        filterRegistrationBean.addInitParameter("principalSessionName", "USER_SESSION");
+        filterRegistrationBean.addInitParameter("DruidWebStatFilter", "/*");
         return filterRegistrationBean;
     }
 }

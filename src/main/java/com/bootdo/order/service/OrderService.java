@@ -14,20 +14,20 @@ import java.util.Map;
  * @date 2018-09-22 15:18:03
  */
 public interface OrderService {
-	
-	OrderDO get(Long orderId);
-	
-	List<OrderDO> list(Map<String, Object> map);
-	
-	int count(Map<String, Object> map);
-	
-	int save(OrderDO list);
-	
-	int update(OrderDO list);
 
-	int removeByDate(Date createDate);
+    OrderDO get(Long orderId);
 
-	int remove(Long orderId);
+    List<OrderDO> list(Map<String, Object> map);
 
-	int batchRemove(Long[] orderIds);
+    int count(Map<String, Object> map);
+
+    int save(OrderDO list);
+
+    int update(OrderDO list);
+
+    int removeByDate(Date createDate);
+
+    int remove(Long orderId);
+
+    int batchRemove(Long[] orderIds);
 }

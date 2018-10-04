@@ -1,15 +1,14 @@
 package com.bootdo.common.utils;
 
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
 
 /**
  * @author xumx
@@ -48,12 +47,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 根据后缀判断是否为 Excel 文件，后缀匹配xls和xlsx
      *
      * @param pathname
      * @return
-     *
      */
     public static boolean isExcel(String pathname) {
         if (pathname == null) {
@@ -63,23 +60,19 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 读取 Excel 第一页所有数据
      *
      * @return
      * @throws Exception
-     *
      */
     public List<List<String>> read() throws Exception {
         return read(0, 0, getRowCount(0) - 1);
     }
 
     /**
-     *
      * 读取指定sheet 页所有数据
      *
-     * @param sheetIx
-     *            指定 sheet 页，从 0 开始
+     * @param sheetIx 指定 sheet 页，从 0 开始
      * @return
      * @throws Exception
      */
@@ -88,15 +81,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 读取指定sheet 页指定行数据
      *
-     * @param sheetIx
-     *            指定 sheet 页，从 0 开始
-     * @param start
-     *            指定开始行，从 0 开始
-     * @param end
-     *            指定结束行，从 0 开始
+     * @param sheetIx 指定 sheet 页，从 0 开始
+     * @param start   指定开始行，从 0 开始
+     * @param end     指定结束行，从 0 开始
      * @return
      * @throws Exception
      */
@@ -127,27 +116,21 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 将数据写入到 Excel 默认第一页中，从第1行开始写入
      *
-     * @param rowData
-     *            数据
+     * @param rowData 数据
      * @return
      * @throws IOException
-     *
      */
     public boolean write(List<List<String>> rowData) throws IOException {
         return write(0, rowData, 0);
     }
 
     /**
-     *
      * 将数据写入到 Excel 新创建的 Sheet 页
      *
-     * @param rowData
-     *            数据
-     * @param sheetName
-     *            长度为1-31，不能包含后面任一字符: ：\ / ? * [ ]
+     * @param rowData   数据
+     * @param sheetName 长度为1-31，不能包含后面任一字符: ：\ / ? * [ ]
      * @return
      * @throws IOException
      */
@@ -163,15 +146,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 将数据追加到sheet页最后
      *
-     * @param rowData
-     *            数据
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param isAppend
-     *            是否追加,true 追加，false 重置sheet再添加
+     * @param rowData  数据
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param isAppend 是否追加,true 追加，false 重置sheet再添加
      * @return
      * @throws IOException
      */
@@ -185,15 +164,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 将数据写入到 Excel 指定 Sheet 页指定开始行中,指定行后面数据向后移动
      *
-     * @param rowData
-     *            数据
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param startRow
-     *            指定开始行，从 0 开始
+     * @param rowData  数据
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param startRow 指定开始行，从 0 开始
      * @return
      * @throws IOException
      */
@@ -214,13 +189,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 设置cell 样式
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param colIndex
-     *            指定列，从 0 开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param colIndex 指定列，从 0 开始
      * @return
      * @throws IOException
      */
@@ -236,11 +208,9 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 设置样式
      *
-     * @param type
-     *            1：标题 2：第一行
+     * @param type 1：标题 2：第一行
      * @return
      */
     public CellStyle makeStyle(int type) {
@@ -277,19 +247,13 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 合并单元格
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param firstRow
-     *            开始行
-     * @param lastRow
-     *            结束行
-     * @param firstCol
-     *            开始列
-     * @param lastCol
-     *            结束列
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param firstRow 开始行
+     * @param lastRow  结束行
+     * @param firstCol 开始列
+     * @param lastCol  结束列
      */
     public void region(int sheetIx, int firstRow, int lastRow, int firstCol, int lastCol) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
@@ -297,13 +261,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 指定行是否为空
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定开始行，从 0 开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定开始行，从 0 开始
      * @return true 不为空，false 不行为空
      * @throws IOException
      */
@@ -313,13 +274,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 创建行，若行存在，则清空
      *
-     * @param sheetIx
-     *            指定 sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定创建行，从 0 开始
+     * @param sheetIx  指定 sheet 页，从 0 开始
+     * @param rowIndex 指定创建行，从 0 开始
      * @return
      * @throws IOException
      */
@@ -330,15 +288,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 指定单元格是否为空
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定开始行，从 0 开始
-     * @param colIndex
-     *            指定开始列，从 0 开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定开始行，从 0 开始
+     * @param colIndex 指定开始列，从 0 开始
      * @return true 行不为空，false 行为空
      * @throws IOException
      */
@@ -352,15 +306,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 创建单元格
      *
-     * @param sheetIx
-     *            指定 sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从 0 开始
-     * @param colIndex
-     *            指定创建列，从 0 开始
+     * @param sheetIx  指定 sheet 页，从 0 开始
+     * @param rowIndex 指定行，从 0 开始
+     * @param colIndex 指定创建列，从 0 开始
      * @return true 列为空，false 行不为空
      * @throws IOException
      */
@@ -374,9 +324,7 @@ public class ExcelUtils {
     /**
      * 返回sheet 中的行数
      *
-     *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
+     * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
      */
     public int getRowCount(int sheetIx) {
@@ -389,13 +337,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 返回所在行的列数
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
      * @return 返回-1 表示所在行为空
      */
     public int getColumnCount(int sheetIx, int rowIndex) {
@@ -406,17 +351,12 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 设置row 和 column 位置的单元格值
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
-     * @param colIndex
-     *            指定列，从0开始
-     * @param value
-     *            值
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
+     * @param colIndex 指定列，从0开始
+     * @param value    值
      * @return
      * @throws IOException
      */
@@ -427,17 +367,12 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 返回 row 和 column 位置的单元格值
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
-     * @param colIndex
-     *            指定列，从0开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
+     * @param colIndex 指定列，从0开始
      * @return
-     *
      */
     public String getValueAt(int sheetIx, int rowIndex, int colIndex) {
         Sheet sheet = workbook.getSheetAt(sheetIx);
@@ -445,15 +380,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 重置指定行的值
      *
-     * @param rowData
-     *            数据
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
+     * @param rowData  数据
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
      * @return
      * @throws IOException
      */
@@ -467,13 +398,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 返回指定行的值的集合
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
      * @return
      */
     public List<String> getRowValue(int sheetIx, int rowIndex) {
@@ -491,15 +419,11 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 返回列的值的集合
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
-     * @param colIndex
-     *            指定列，从0开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
+     * @param colIndex 指定列，从0开始
      * @return
      */
     public List<String> getColumnValue(int sheetIx, int rowIndex, int colIndex) {
@@ -517,7 +441,6 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 获取excel 中sheet 总页数
      *
      * @return
@@ -531,11 +454,9 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 设置sheet名称，长度为1-31，不能包含后面任一字符: ：\ / ? * [ ]
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始，//
+     * @param sheetIx 指定 Sheet 页，从 0 开始，//
      * @param name
      * @return
      * @throws IOException
@@ -546,11 +467,9 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 获取 sheet名称
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
+     * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
      * @throws IOException
      */
@@ -562,8 +481,7 @@ public class ExcelUtils {
     /**
      * 获取sheet的索引，从0开始
      *
-     * @param name
-     *            sheet 名称
+     * @param name sheet 名称
      * @return -1表示该未找到名称对应的sheet
      */
     public int getSheetIndex(String name) {
@@ -571,11 +489,9 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 删除指定sheet
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
+     * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
      * @throws IOException
      */
@@ -585,13 +501,10 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 删除指定sheet中行，改变该行之后行的索引
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
-     * @param rowIndex
-     *            指定行，从0开始
+     * @param sheetIx  指定 Sheet 页，从 0 开始
+     * @param rowIndex 指定行，从0开始
      * @return
      * @throws IOException
      */
@@ -604,24 +517,19 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 设置sheet 页的索引
      *
-     * @param sheetname
-     *            Sheet 名称
-     * @param sheetIx
-     *            Sheet 索引，从0开始
+     * @param sheetname Sheet 名称
+     * @param sheetIx   Sheet 索引，从0开始
      */
     public void setSheetOrder(String sheetname, int sheetIx) {
         workbook.setSheetOrder(sheetname, sheetIx);
     }
 
     /**
-     *
      * 清空指定sheet页（先删除后添加并指定sheetIx）
      *
-     * @param sheetIx
-     *            指定 Sheet 页，从 0 开始
+     * @param sheetIx 指定 Sheet 页，从 0 开始
      * @return
      * @throws IOException
      */
@@ -638,7 +546,6 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 关闭流
      *
      * @throws IOException
@@ -651,7 +558,6 @@ public class ExcelUtils {
     }
 
     /**
-     *
      * 转换单元格的类型为String 默认的 <br>
      * 默认的数据类型：CELL_TYPE_BLANK(3), CELL_TYPE_BOOLEAN(4),
      * CELL_TYPE_ERROR(5),CELL_TYPE_FORMULA(2), CELL_TYPE_NUMERIC(0),
@@ -659,7 +565,6 @@ public class ExcelUtils {
      *
      * @param cell
      * @return
-     *
      */
     private String getCellValueToString(Cell cell) {
         String strCell = "";
@@ -668,7 +573,7 @@ public class ExcelUtils {
         }
         if (cell.getCellType() == CellType.BOOLEAN) {
             strCell = String.valueOf(cell.getBooleanCellValue());
-        }else if(cell.getCellType() == CellType.NUMERIC) {
+        } else if (cell.getCellType() == CellType.NUMERIC) {
             if (HSSFDateUtil.isCellDateFormatted(cell)) {
                 Date date = cell.getDateCellValue();
                 if (pattern != null) {
@@ -681,8 +586,8 @@ public class ExcelUtils {
             // 不是日期格式，则防止当数字过长时以科学计数法显示
             cell.setCellType(CellType.STRING);
             strCell = cell.toString();
-        }else if(cell.getCellType() == CellType.STRING){
-                strCell = cell.getStringCellValue();
+        } else if (cell.getCellType() == CellType.STRING) {
+            strCell = cell.getStringCellValue();
         }
         return strCell;
     }
@@ -690,7 +595,7 @@ public class ExcelUtils {
     public static void main(String[] args) throws Exception {
         File file = new File("/Users/fjn/Downloads/excel/1平台订单模版02yit.xls");
         InputStream in = new FileInputStream(file);
-        Workbook wb1= WorkbookFactory.create(in);
+        Workbook wb1 = WorkbookFactory.create(in);
         wb1.getSheetAt(0);
     }
 }

@@ -13,18 +13,18 @@ import java.util.Map;
  * @date 2018-09-22 16:27:23
  */
 public interface ModuleService {
-	
-	ModuleDO get(Long moduleId);
-	
-	List<ModuleDO> list(Map<String, Object> map);
-	
-	int count(Map<String, Object> map);
-	
-	int save(ModuleDO module);
-	
-	int update(ModuleDO module);
-	
-	int remove(Long moduleId);
-	
-	int batchRemove(Long[] moduleIds);
+
+    ModuleDO get(Long moduleId);
+
+    List<ModuleDO> list(Map<String, Object> map);
+
+    int count(Map<String, Object> map);
+
+    int save(ModuleDO module);
+
+    int update(ModuleDO module);
+
+    int remove(Long moduleId);
+
+    int batchRemove(Long[] moduleIds);
 }

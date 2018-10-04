@@ -1,9 +1,9 @@
 package com.bootdo.oa.domain;
 
 public class Message {
-	private String name;
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 }
