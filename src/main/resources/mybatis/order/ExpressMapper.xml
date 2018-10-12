@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.order.dao.ExpressDao">
+
+    <select id="get" resultType="com.bootdo.order.domain.ExpressDO">
+		select `order_id`,`sku`,`express_id`,`express_company`,`create_date` from express_list where create_date = #{value}
+	</select>
+
+    <select id="list" resultType="com.bootdo.order.domain.ExpressDO">
+        select `order_id`,`sku`,`express_id`,`express_company`,`create_date` from express_list
+        <where>
+            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="sku != null and sku != ''">and sku = #{sku}</if>
+            <if test="expressId != null and expressId != ''">and express_id = #{expressId}</if>
+            <if test="expressCompany != null and expressCompany != ''">and express_company = #{expressCompany}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by order_id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from express_list
+        <where>
+            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="sku != null and sku != ''">and sku = #{sku}</if>
+            <if test="expressId != null and expressId != ''">and express_id = #{expressId}</if>
+            <if test="expressCompany != null and expressCompany != ''">and express_company = #{expressCompany}</if>
+            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.order.domain.ExpressDO">
+		insert into express_list
+		(
+			`order_id`, 
+			`sku`, 
+			`express_id`, 
+			`express_company`, 
+			`create_date`
+		)
+		values
+		(
+			#{orderId}, 
+			#{sku}, 
+			#{expressId}, 
+			#{expressCompany}, 
+			#{createDate}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.bootdo.order.domain.ExpressDO">
+        update express_list
+        <set>
+            <if test="sku != null">`sku` = #{sku},</if>
+            <if test="expressId != null">`express_id` = #{expressId},</if>
+            <if test="expressCompany != null">`express_company` = #{expressCompany},</if>
+            <if test="createDate != null">`create_date` = #{createDate}</if>
+        </set>
+        where order_id = #{orderId}
+    </update>
+
+    <delete id="remove">
+		delete from express_list where create_date = #{createDate}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from express_list where DATE_FORMAT(create_date,'%Y%m%d') in
+        <foreach item="createDates" collection="array" open="(" separator="," close=")">
+            #{value}
+        </foreach>
+    </delete>
+
+</mapper>

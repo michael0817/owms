@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<button shiro:hasPermission="order:express:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
+								<i class="fa fa-upload" aria-hidden="true"></i>导入
+							</button>
+							<button shiro:hasPermission="order:express:export" type="button" class="btn  btn-primary" onclick="divideAndExport()">
+								<i class="fa fa-download" aria-hidden="true"></i>导出
+							</button>
+							<button shiro:hasPermission="order:express:remove" type="button" class="btn  btn-primary" onclick="batchRemove()">
+								<i class="fa fa-remove" aria-hidden="true"></i>删除
+							</button>
+						</div>
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+						<div class="search pull-right ">
+							<input id="orderId" type="text" class="form-control" placeholder="订单编号">
+						</div>
+						<div class="search pull-right ">
+							<input id="expressId" type="select" class="form-control" placeholder="运单编号">
+						</div>
+						<div class="search pull-right ">
+							<input type="text" class="laydate-icon form-control" id="createDate" name="createDate" placeholder="请选择日期"
+								   onclick="laydate()" readonly="readonly"/>
+						</div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="order:express:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="order:express:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="order:express:resetPwd">
+			<script type="text/javascript">
+				var s_resetPwd_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/order/express/list.js"></script>
+</body>
+</html>
