@@ -1,73 +1,14 @@
 $().ready(function() {
     laydate({
-        elem: '#createDate'
+        elem: '#createDate',
+        done: function(){
+            $('#importDate').text($('#createDate').val());
+        }
     });
     $('#createDate').val(laydate.now());
     bindFileUpload();
-    $("#importForm").ajaxForm(function(data){
-        if (data.code == 0) {
-            parent.layer.alert(
-                "导入成功的文件：<br/>"+data.successList+"<br/>"+
-                "导入失败的订单：<br/>"+data.failedOrderList+"<br/>"+
-                "导入失败的文件：<br/>"+data.failedList+"<br/>"+
-                "忽略的文件：<br/>"+data.ignoreList+"<br/>"
-            ,{area: ['800px', '600px']});
-            parent.reLoad();
-            var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-            parent.layer.close(index);
-
-        } else {
-            parent.layer.alert(data.msg)
-        }
-    });
+    formSubmit();
 });
-
-// $.validator.setDefaults({
-// 	submitHandler : function() {
-// 		save();
-// 	}
-// });
-
-// function upload() {
-// 	$.ajax({
-// 		cache : true,
-// 		type : "POST",
-// 		url : "/order/order/upload",
-// 		data : $('#importForm').serialize(),// 你的formid
-// 		async : false,
-// 		error : function(request) {
-// 			parent.layer.alert("Connection error");
-// 		},
-// 		success : function(data) {
-// 			if (data.code == 0) {
-// 				parent.layer.msg("操作成功");
-// 				parent.reLoad();
-// 				var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
-// 				parent.layer.close(index);
-//
-// 			} else {
-// 				parent.layer.alert(data.msg)
-// 			}
-//
-// 		}
-// 	});
-// }
-
-// function subimtBtn() {
-//     var options  = {
-//         url:'order/order/upload',
-//         type:'post',
-//         success:function(data)
-//         {
-//             alert(data);
-//         }
-//     };
-//     $('#importForm').submit(function(){
-//         $(this).ajaxSubmit(options);
-//         return false;   //防止表单自动提交
-//     });
-//     //$("#fileForm").submit();  
-// }
 
 function validateRule() {
 	var icon = "<i class='fa fa-times-circle'></i> ";
@@ -102,4 +43,31 @@ function bindFileUpload(){
             $('#showFile').val(count+'个文件');
         }
     });
+}
+
+function formSubmit(){
+    $('#submitBtn').on('click',function(){
+        $("#importForm").validate();
+        layer.confirm('导入日期为'+$('#createDate').val()+'的所有文件？', {
+            btn : [ '确定', '取消' ]
+        },function(){
+            $("#importForm").ajaxSubmit(function(data){
+                if (data.code == 0) {
+                    parent.layer.alert(
+                        "导入成功的文件：<br/>"+data.successList+"<br/>"+
+                        "导入失败的订单：<br/>"+data.failedOrderList+"<br/>"+
+                        "导入失败的文件：<br/>"+data.failedList+"<br/>"+
+                        "忽略的文件：<br/>"+data.ignoreList+"<br/>"
+                        ,{area: ['800px', '480px']});
+                    parent.reLoad();
+                    var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引
+                    parent.layer.close(index);
+                } else {
+                    parent.layer.alert(data.msg)
+                }
+            });
+        });
+    });
+
+
 }

@@ -11,9 +11,13 @@ import com.bootdo.order.service.FieldMappingService;
 import com.bootdo.order.service.ModuleService;
 import com.bootdo.order.service.OrderService;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,6 +41,9 @@ import java.util.*;
 @Controller
 @RequestMapping("/order/order")
 public class OrderController extends BaseController {
+
+    private static Logger logger = LoggerFactory.getLogger(OrderController.class);
+
     @Autowired
     private OrderService orderService;
 
@@ -76,6 +83,12 @@ public class OrderController extends BaseController {
         return "order/order/import";
     }
 
+    @GetMapping("/append")
+    @RequiresPermissions("order:order:import")
+    String appendAndImport() {
+        return "order/order/append";
+    }
+
     @GetMapping("/export")
     @RequiresPermissions("order:order:export")
     String divideAndExport() {
@@ -84,7 +97,7 @@ public class OrderController extends BaseController {
 
     @GetMapping("/edit/{orderId}")
     @RequiresPermissions("order:order:edit")
-    String edit(@PathVariable("orderId") Long orderId, Model model) {
+    String edit(@PathVariable("orderId") String orderId, Model model) {
         OrderDO list = orderService.get(orderId);
         model.addAttribute("order", list);
         return "order/order/edit";
@@ -120,7 +133,7 @@ public class OrderController extends BaseController {
     @PostMapping("/remove")
     @ResponseBody
     @RequiresPermissions("order:order:remove")
-    public R remove(Long orderId) {
+    public R remove(String orderId) {
         if (orderService.remove(orderId) > 0) {
             return R.ok();
         }
@@ -133,7 +146,7 @@ public class OrderController extends BaseController {
     @PostMapping("/batchRemove")
     @ResponseBody
     @RequiresPermissions("order:order:batchRemove")
-    public R batchRemove(@RequestParam("ids[]") Long[] orderIds) {
+    public R batchRemove(@RequestParam("ids[]") String[] orderIds) {
         orderService.batchRemove(orderIds);
         return R.ok();
     }
@@ -141,7 +154,7 @@ public class OrderController extends BaseController {
     @ResponseBody
     @PostMapping("/import")
     @RequiresPermissions("order:order:import")
-    R upload(@RequestParam("createDate") Date createDate, @RequestParam("file") MultipartFile[] file) {
+    R upload(@RequestParam("createDate") Date createDate, @RequestParam("deleteFlag") String deleteFlag, @RequestParam("file") MultipartFile[] file) {
         List<String> failedList = new ArrayList<String>();
         List<String> ignoreList = new ArrayList<String>();
         List<String> successList = new ArrayList<String>();
@@ -156,8 +169,9 @@ public class OrderController extends BaseController {
                     if (name.length <= 1) {
                         name = singleFile.getOriginalFilename().split("/");
                     }
+                    String filename = name[name.length-1];
                     if (!singleFile.getOriginalFilename().contains(date)) {
-                        ignoreList.add(name[1]);
+                        ignoreList.add(filename);
                         continue;
                     }
                     Map moduleMap = new HashMap();
@@ -166,7 +180,7 @@ public class OrderController extends BaseController {
                     boolean matchFlag = false;
                     for (ModuleDO moduleDO : moduleList) {
                         if (name.length == 2) {
-                            if (!name[1].startsWith(moduleDO.getPrefix())) {
+                            if (!filename.startsWith(moduleDO.getPrefix())) {
                                 continue;
                             }
                         }
@@ -174,21 +188,25 @@ public class OrderController extends BaseController {
                             List<OrderDO> orderList = readOrders(singleFile.getInputStream(), moduleDO.getModuleId(), createDate);
                             totalOrderList.addAll(orderList);
                             matchFlag = true;
-                            successList.add(name[1]);
+                            successList.add(filename);
                         } catch (IOException e) {
+                            logger.error(e.getMessage());
                             e.printStackTrace();
-                            failedList.add(name[1]);
+                            failedList.add(filename);
                         }
                     }
                     if (!matchFlag) {
-                        ignoreList.add(name[1]);
+                        ignoreList.add(filename);
                     }
                 }
-                orderService.removeByDate(createDate == null ? new Date() : createDate);
+                if("1".equals(deleteFlag)) {
+                    orderService.removeByDate(createDate == null ? new Date() : createDate);
+                }
                 for (OrderDO orderDO : totalOrderList) {
                     try {
                         orderService.save(orderDO);
                     } catch (Exception e) {
+                        logger.error(e.getMessage());
                         e.printStackTrace();
                         failedOrderList.add(orderDO.getOrderId());
                     }
@@ -201,6 +219,7 @@ public class OrderController extends BaseController {
             r.put("failedOrderList", JSONArray.toJSONString(failedOrderList));
             return r;
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
             return R.error("导入失败:请联系系统管理员");
         }
@@ -248,6 +267,7 @@ public class OrderController extends BaseController {
             toClient.flush();
             toClient.close();
         } catch (IOException ex) {
+            logger.error(ex.getMessage());
             ex.printStackTrace();
         }
     }
@@ -256,6 +276,7 @@ public class OrderController extends BaseController {
         List<OrderDO> orderList = new ArrayList<OrderDO>();
         try {
             ExcelUtils et = new ExcelUtils(is);
+            logger.info("read excel");
             List<Map<String, Object>> excelFieldMapList = fieldMappingService.getOrderMapping(moduleId);
             List<String> titleList = et.read(0, 0, 1).get(0);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();
@@ -273,7 +294,8 @@ public class OrderController extends BaseController {
                 Map<String, String> map = new HashMap<String, String>();
                 OrderDO orderDO = new OrderDO();
                 for (Map.Entry<String, Integer> entry : columnMap.entrySet()) {
-                    map.put(entry.getKey(), colList.get(entry.getValue()));
+                     map.put(entry.getKey(), colList.get(entry.getValue()));
+                     logger.info(entry.getKey()+","+colList.get(entry.getValue()));
                 }
                 RefBeanUtils.setFieldValue(orderDO, map);
                 if (orderDO.getOrderId() == null) {
@@ -290,7 +312,11 @@ public class OrderController extends BaseController {
                 if (orderDO.getProvince().equals(orderDO.getStreet()) && orderDO.getCity().equals(orderDO.getStreet())) {
                     index = address.indexOf("省");
                     if (index < 0) {
-                        index = address.indexOf("市");
+                        if(address.indexOf("自治区")>0) {
+                            index = address.indexOf("自治区")+3;
+                        } else {
+                            index = address.indexOf("市");
+                        }
                     }
                     province = address.substring(0, index + 1);
                     address = address.substring(index + 1);
@@ -310,6 +336,10 @@ public class OrderController extends BaseController {
                 orderDO.setZipCode(ZipCodeUtils.getZipCode(orderDO.getProvince(), orderDO.getCity()));
                 orderDO.setConsigneeCountry("CN");
                 orderDO.setInsuranceType("无保");
+                if(orderDO.getProvince().equals("上海")||orderDO.getProvince().equals("北京")
+                        ||orderDO.getProvince().equals("天津")||orderDO.getProvince().equals("重庆")){
+                    orderDO.setProvince(orderDO.getProvince()+"市");
+                }
 //                orderService.save(orderDO);
                 orderList.add(orderDO);
             }
@@ -334,10 +364,10 @@ public class OrderController extends BaseController {
             List<OrderDO> orderList = orderService.list(map);
             Map<String, List<OrderDO>> rowMap = new HashMap();
             for (OrderDO orderDO : orderList) {
-                if (!rowMap.containsKey(orderDO.getConsigneeId() + orderDO.getStreet())) {
-                    rowMap.put(orderDO.getConsigneeId() + orderDO.getStreet(), new ArrayList<OrderDO>());
+                if (!rowMap.containsKey(orderDO.getOrderId())) {
+                    rowMap.put(orderDO.getOrderId(), new ArrayList<OrderDO>());
                 }
-                rowMap.get(orderDO.getConsigneeId() + orderDO.getStreet()).add(orderDO);
+                rowMap.get(orderDO.getOrderId()).add(orderDO);
             }
             int rownum = 2;
             // 第一行是标题，第二行是样例
@@ -385,6 +415,12 @@ public class OrderController extends BaseController {
                         skuNum++;
                     }
                     if (singleRowMap != null) {
+                        Row targetRow = workbook.getSheetAt(0).getRow(rownum);
+                        if(targetRow == null){
+                            workbook.getSheetAt(0).createRow(rownum);
+                            targetRow = workbook.getSheetAt(0).getRow(rownum);
+                        }
+                        et.copyRow(firstRow, targetRow,true);
                         for (int colnum = 0; colnum < firstRow.getLastCellNum(); colnum++) {
                             Cell cell = workbook.getSheetAt(0).getRow(rownum).getCell(colnum);
                             if (singleRowMap.containsKey(titleList.get(colnum))) {
@@ -393,18 +429,23 @@ public class OrderController extends BaseController {
                                 } else {
                                     cell.setCellValue(singleRowMap.get(titleList.get(colnum)));
                                 }
-                            } else {
-                                cell.setCellValue(firstRow.getCell(colnum).getStringCellValue());
                             }
                         }
                         rownum++;
                     }
                 }
             }
+            List<? extends DataValidation> dvList = workbook.getSheetAt(0).getDataValidations();
+            for(DataValidation dv : dvList){
+                for(CellRangeAddress cra : dv.getRegions().getCellRangeAddresses()){
+                    if(cra.getFirstRow()>0){
+                        cra.setLastRow(rownum);
+                    }
+                }
+            }
             workbook.getSheetAt(0).shiftRows(2, rownum, -1);
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (Exception e) {
+            logger.error(e.getMessage());
             e.printStackTrace();
         }
         return workbook;

@@ -10,7 +10,10 @@
 					<div class="fixed-table-toolbar">
 						<div class="columns pull-left">
 							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
-									<i class="fa fa-upload" aria-hidden="true"></i>导入
+									<i class="fa fa-upload" aria-hidden="true"></i>批量导入
+							</button>
+							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="appendAndImport()">
+								<i class="fa fa-upload" aria-hidden="true"></i>追加导入
 							</button>
 							<button shiro:hasPermission="order:order:export" type="button" class="btn  btn-primary" onclick="divideAndExport()">
 								<i class="fa fa-download" aria-hidden="true"></i>导出

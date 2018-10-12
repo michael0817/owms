@@ -158,6 +158,16 @@ function mergeAndImport() {
 		content : prefix + '/import' // iframe的url
 	});
 }
+function appendAndImport() {
+    layer.open({
+        type : 2,
+        title : '导入',
+        maxmin : true,
+        shadeClose : false, // 点击遮罩关闭层
+        area : [ '800px', '520px' ],
+        content : prefix + '/append' // iframe的url
+    });
+}
 function divideAndExport() {
     layer.open({
         type : 2,

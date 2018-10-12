@@ -17,7 +17,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderDao orderDao;
 
     @Override
-    public OrderDO get(Long orderId) {
+    public OrderDO get(String orderId) {
         return orderDao.get(orderId);
     }
 
@@ -42,7 +42,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int remove(Long orderId) {
+    public int remove(String orderId) {
         return orderDao.remove(orderId);
     }
 
@@ -52,7 +52,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int batchRemove(Long[] orderIds) {
+    public int batchRemove(String[] orderIds) {
         return orderDao.batchRemove(orderIds);
     }
 

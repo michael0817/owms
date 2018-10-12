@@ -17,7 +17,7 @@ import java.util.Map;
 @Mapper
 public interface OrderDao {
 
-    OrderDO get(Long orderId);
+    OrderDO get(String orderId);
 
     List<OrderDO> list(Map<String, Object> map);
 
@@ -27,9 +27,9 @@ public interface OrderDao {
 
     int update(OrderDO order);
 
-    int remove(Long orderId);
+    int remove(String orderId);
 
     int removeByDate(Date createDate);
 
-    int batchRemove(Long[] orderIds);
+    int batchRemove(String[] orderIds);
 }
