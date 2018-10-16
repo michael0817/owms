@@ -659,9 +659,21 @@ public class ExcelUtils {
     }
 
     public static void main(String[] args) throws Exception {
-        File file = new File("/Users/fjn/Downloads/excel/1平台订单模版02yit.xls");
+        File file = new File("C:\\Users\\mjnar\\Downloads\\1.xls");
         InputStream in = new FileInputStream(file);
         Workbook wb1 = WorkbookFactory.create(in);
-        wb1.getSheetAt(0);
+        Sheet sheet = wb1.getSheetAt(0);
+        sheet.getDataValidations();
+        List<? extends DataValidation> list = sheet.getDataValidations();
+        for(DataValidation dv : list) {
+        	for(CellRangeAddress addr : dv.getRegions().getCellRangeAddresses()) {
+        		addr.setLastRow(50);
+        	}
+        }
+        File newFile = new File("C:\\Users\\mjnar\\Downloads\\2.xls");
+        FileOutputStream fos = new FileOutputStream(newFile);
+        wb1.write(fos);
+        fos.close();
+        wb1.close();
     }
 }

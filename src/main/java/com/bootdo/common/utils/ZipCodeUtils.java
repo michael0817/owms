@@ -32,7 +32,7 @@ public class ZipCodeUtils {
 
     public static String getZipCode(String province, String city) {
         if (city != null) {
-            return zipCodeMap.get(city);
+            return zipCodeMap.get(city.replace("自治州", "").replace("地区", "").replaceAll("市$", ""));
         } else if (province != null) {
             return zipCodeMap.get(province);
         }

@@ -24,6 +24,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
@@ -229,7 +230,7 @@ public class OrderController extends BaseController {
     @ResponseBody
     @GetMapping("/export/{createDate}")
     @RequiresPermissions("order:order:export")
-    void download(@PathVariable("createDate") Date createDate, HttpServletResponse response) {
+    void download(@PathVariable("createDate") Date createDate, HttpServletRequest request, HttpServletResponse response) {
         try {
             Map map = new HashMap();
             map.put("moduleType", 2);
@@ -251,7 +252,14 @@ public class OrderController extends BaseController {
             response.reset();
             // 设置response的Header
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
-            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(filename, "UTF-8"));
+    		String agent = request.getHeader("USER-AGENT");
+            if(agent != null && agent.toLowerCase().indexOf("firefox") > 0){
+            	filename = new String(filename.getBytes("GB2312"),"ISO-8859-1");
+            }else {
+            	filename = URLEncoder.encode(filename, "UTF-8");
+            }
+            response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             workbook.write(bos);
             byte[] content = bos.toByteArray();
@@ -327,12 +335,17 @@ public class OrderController extends BaseController {
                     orderDO.setCity(city);
                     orderDO.setStreet(address);
                 }
-                index = address.indexOf("区");
+                index = address.indexOf("区 ");
                 if (index < 0) {
-                    index = address.indexOf("县");
+                    index = address.indexOf("县 ");
+                }
+                if (index < 0) {
+                    index = address.indexOf("市 ");
                 }
                 district = address.substring(0, index + 1);
+                address = address.substring(index+2);
                 orderDO.setDoorplate(district);
+                orderDO.setStreet(address);
                 orderDO.setZipCode(ZipCodeUtils.getZipCode(orderDO.getProvince(), orderDO.getCity()));
                 orderDO.setConsigneeCountry("CN");
                 orderDO.setInsuranceType("无保");
