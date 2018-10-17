@@ -3,7 +3,6 @@ package com.bootdo.order.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.bootdo.common.config.BootdoConfig;
 import com.bootdo.common.controller.BaseController;
-import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.*;
 import com.bootdo.order.domain.ModuleDO;
 import com.bootdo.order.domain.OrderDO;
@@ -53,9 +52,6 @@ public class OrderController extends BaseController {
 
     @Autowired
     private FieldMappingService fieldMappingService;
-
-    @Autowired
-    private DictService dictService;
 
     @Autowired
     private BootdoConfig bootdoConfig;
@@ -316,7 +312,7 @@ public class OrderController extends BaseController {
                 String city = "";
                 String district = "";
                 int index = 0;
-                address = orderDO.getStreet();
+                address = orderDO.getStreet() + " " + orderDO.getActualConsigneeName();
                 if (orderDO.getProvince().equals(orderDO.getStreet()) && orderDO.getCity().equals(orderDO.getStreet())) {
                     index = address.indexOf("省");
                     if (index < 0) {

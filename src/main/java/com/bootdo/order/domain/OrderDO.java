@@ -28,6 +28,8 @@ public class OrderDO implements Serializable {
     private String insuranceValue;
     //收件人姓名
     private String consigneeName;
+    //实际收件人姓名
+    private String actualConsigneeName;
     //收件人电话
     private String consigneePhone;
     //收件人身份证号
@@ -148,8 +150,20 @@ public class OrderDO implements Serializable {
     public String getConsigneeName() {
         return consigneeName;
     }
-
     /**
+     * 获取：实际收件人姓名
+     */
+    public String getActualConsigneeName() {
+		return actualConsigneeName;
+	}
+    /**
+     * 设置：实际收件人姓名
+     */
+	public void setActualConsigneeName(String actualConsigneeName) {
+		this.actualConsigneeName = actualConsigneeName;
+	}
+
+	/**
      * 设置：收件人电话
      */
     public void setConsigneePhone(String consigneePhone) {
