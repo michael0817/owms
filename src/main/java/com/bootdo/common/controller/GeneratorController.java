@@ -35,8 +35,7 @@ public class GeneratorController {
     @ResponseBody
     @GetMapping("/list")
     List<Map<String, Object>> list() {
-        List<Map<String, Object>> list = generatorService.list();
-        return list;
+        List<Map<String, Object>> list = generatorService.list();return list;
     }
 
     ;
@@ -55,7 +54,7 @@ public class GeneratorController {
     }
 
     @RequestMapping("/batchCode")
-    public void batchCode(HttpServletRequest request, HttpServletResponse response, String tables) throws IOException {
+    public void batchCode(HttpServletRequest request, HttpServletResponse response,@RequestParam("tables") String tables) throws IOException {
         String[] tableNames = new String[]{};
         tableNames = JSON.parseArray(tables).toArray(tableNames);
         byte[] data = generatorService.generatorCode(tableNames);

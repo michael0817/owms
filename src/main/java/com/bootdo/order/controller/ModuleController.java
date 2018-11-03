@@ -1,11 +1,12 @@
 package com.bootdo.order.controller;
 
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.service.FileService;
 import com.bootdo.common.utils.*;
 import com.bootdo.order.domain.ExcelFieldsDO;
 import com.bootdo.order.domain.ModuleDO;
+import com.bootdo.order.enums.ModuleType;
 import com.bootdo.order.service.ExcelFieldsService;
 import com.bootdo.order.service.ModuleService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -45,7 +46,7 @@ public class ModuleController extends BaseController {
     private ExcelFieldsService excelFieldService;
 
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
 
     @GetMapping()
     @RequiresPermissions("order:module:list")
@@ -98,9 +99,9 @@ public class ModuleController extends BaseController {
     @PostMapping("/save")
     @RequiresPermissions("order:module:add")
     public R save(ModuleDO module) {
-        if (module.getModuleType() == 2) {
+        if (module.getModuleType() == ModuleType.MODULE.getIndex()) {
             Map params = new HashMap();
-            params.put("moduleType", 2);
+            params.put("moduleType", ModuleType.MODULE.getIndex());
             if (moduleService.list(params).size() > 0) {
                 return R.error("订单宝模板已经存在，不能重复导入");
             }

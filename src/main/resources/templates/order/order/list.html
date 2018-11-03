@@ -10,34 +10,44 @@
 					<div class="fixed-table-toolbar">
 						<div class="columns pull-left">
 							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
-									<i class="fa fa-upload" aria-hidden="true"></i>批量导入
+									<i class="fa" aria-hidden="true"></i>批量导入
 							</button>
 							<button shiro:hasPermission="order:order:import" type="button" class="btn  btn-primary" onclick="appendAndImport()">
-								<i class="fa fa-upload" aria-hidden="true"></i>追加导入
+								<i class="fa" aria-hidden="true"></i>追加导入
 							</button>
 							<button shiro:hasPermission="order:order:export" type="button" class="btn  btn-primary" onclick="divideAndExport()">
-								<i class="fa fa-download" aria-hidden="true"></i>导出
+								<i class="fa" aria-hidden="true"></i>导出
 							</button>
 							<button shiro:hasPermission="order:order:batchRemove" type="button" class="btn  btn-danger"
 								onclick="batchRemove()">
-								<i class="fa fa-trash" aria-hidden="true"></i>删除
+								<i class="fa" aria-hidden="true"></i>删除
 							</button>
 						</div>
 						<div class="columns pull-right">
 							<button class="btn btn-success" onclick="reLoad()">查询</button>
 						</div>
 						<div class="search pull-right ">
+							<select name="availableFlag" id="availableFlag"
+									class="form-control chosen-select">
+								<option value="all">--库存情况--</option>
+								<option value="0">库存不足</option>
+								<option value="1">库存足够</option>
+							</select>
+						</div>
+						<div class="search pull-right ">
 							<input id="orderId" type="text" class="form-control" placeholder="订单编号">
 						</div>
+						<!--<div class="search pull-right ">-->
+							<!--<input id="moduleId" type="text" class="form-control" placeholder="模板">-->
+						<!--</div>-->
 						<div class="search pull-right ">
-							<input id="moduleId" type="select" class="form-control" placeholder="模板">
-						</div>
-						<div class="search pull-right ">
-							<input type="text" class="laydate-icon form-control" id="createDate" name="createDate" placeholder="请选择日期"
+							<input type="text" class="laydate-icon form-control" id="endDate" name="endDate" placeholder="结束日期"
 								   onclick="laydate()" readonly="readonly"/>
 						</div>
-
-
+						<div class="search pull-right ">
+							<input type="text" class="laydate-icon form-control" id="startDate" name="startDate" placeholder="起始日期"
+								   onclick="laydate()" readonly="readonly"/>
+						</div>
 					</div>
 					<table id="exampleTable" data-mobile-responsive="true">
 					</table>

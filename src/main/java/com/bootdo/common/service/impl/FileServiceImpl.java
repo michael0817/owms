@@ -1,6 +1,6 @@
 package com.bootdo.common.service.impl;
 
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.dao.FileDao;
 import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.service.FileService;
@@ -19,7 +19,7 @@ public class FileServiceImpl implements FileService {
     private FileDao sysFileMapper;
 
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
 
     @Override
     public FileDO get(Long id) {

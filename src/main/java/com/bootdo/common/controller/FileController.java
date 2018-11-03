@@ -1,6 +1,6 @@
 package com.bootdo.common.controller;
 
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.service.FileService;
 import com.bootdo.common.utils.*;
@@ -32,7 +32,7 @@ public class FileController extends BaseController {
     private FileService sysFileService;
 
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
 
     @GetMapping()
     @RequiresPermissions("common:sysFile:sysFile")

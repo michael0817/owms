@@ -199,7 +199,6 @@ function loadModuleType() {
     });
     //点击事件
     $('#moduleList').on('change', function(e, params) {
-        loadExcelFields();
     });
 }
 
@@ -238,7 +237,7 @@ function isInArray(arr,value){
 
 function formatExcelFieldColumn(value,index){
     var html = '';
-    var forbidRow = [0,2,3,4,8,13];
+    var forbidRow = [0,2,3,4,9,14];
     if($('#moduleType option:selected').val() == 1 && isInArray(forbidRow,index)){
     	html += '<select class="form-control chosen-select" autocomplete="off" disabled="disabled">';
         html += '<option value="">--自动填充--</option>';

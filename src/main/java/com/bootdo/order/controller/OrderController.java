@@ -1,11 +1,12 @@
 package com.bootdo.order.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.utils.*;
 import com.bootdo.order.domain.ModuleDO;
 import com.bootdo.order.domain.OrderDO;
+import com.bootdo.order.enums.ModuleType;
 import com.bootdo.order.service.FieldMappingService;
 import com.bootdo.order.service.ModuleService;
 import com.bootdo.order.service.OrderService;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +56,7 @@ public class OrderController extends BaseController {
     private FieldMappingService fieldMappingService;
 
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
 
     @GetMapping()
     @RequiresPermissions("order:order:list")
@@ -68,9 +70,9 @@ public class OrderController extends BaseController {
     public PageUtils list(@RequestParam Map<String, Object> params) {
         //查询列表数据
         Query query = new Query(params);
-        List<OrderDO> listList = orderService.list(query);
+        List<OrderDO> orderList = orderService.list(query);
         int total = orderService.count(query);
-        PageUtils pageUtils = new PageUtils(listList, total);
+        PageUtils pageUtils = new PageUtils(orderList, total);
         return pageUtils;
     }
 
@@ -151,6 +153,7 @@ public class OrderController extends BaseController {
     @ResponseBody
     @PostMapping("/import")
     @RequiresPermissions("order:order:import")
+    @Transactional
     R upload(@RequestParam("createDate") Date createDate, @RequestParam("deleteFlag") String deleteFlag, @RequestParam("file") MultipartFile[] file) {
         List<String> failedList = new ArrayList<String>();
         List<String> ignoreList = new ArrayList<String>();
@@ -172,7 +175,7 @@ public class OrderController extends BaseController {
                         continue;
                     }
                     Map moduleMap = new HashMap();
-                    moduleMap.put("moduleType", 1);
+                    moduleMap.put("moduleType", ModuleType.ORDER.getIndex());
                     List<ModuleDO> moduleList = moduleService.list(moduleMap);
                     boolean matchFlag = false;
                     for (ModuleDO moduleDO : moduleList) {
@@ -201,7 +204,8 @@ public class OrderController extends BaseController {
                 }
                 for (OrderDO orderDO : totalOrderList) {
                     try {
-                        orderService.save(orderDO);
+//                        orderService.save(orderDO);
+                        orderService.saveOrder(orderDO);
                     } catch (Exception e) {
                         logger.error(e.getMessage());
                         e.printStackTrace();
@@ -224,12 +228,14 @@ public class OrderController extends BaseController {
     }
 
     @ResponseBody
-    @GetMapping("/export/{createDate}")
+    @GetMapping("/export/{createDate}/{availableFlag}")
     @RequiresPermissions("order:order:export")
-    void download(@PathVariable("createDate") Date createDate, HttpServletRequest request, HttpServletResponse response) {
+    void download(@PathVariable("createDate") Date createDate,
+                  @PathVariable("availableFlag") String availableFlag,
+                  HttpServletRequest request, HttpServletResponse response) {
         try {
             Map map = new HashMap();
-            map.put("moduleType", 2);
+            map.put("moduleType", ModuleType.MODULE.getIndex());
             List<ModuleDO> moduleList = moduleService.list(map);
             ModuleDO moduleDO = moduleList.get(0);
             String path = bootdoConfig.getUploadPath() + "/modules/" + moduleDO.getUrl();
@@ -243,7 +249,10 @@ public class OrderController extends BaseController {
                     + date + moduleFile.getName().substring(moduleFile.getName().lastIndexOf("."));
 
             // 写Excel
-            Workbook workbook = writeOrders(moduleFile, moduleDO.getModuleId(), date);
+            Map params = new HashMap();
+            params.put("createDate", date);
+            params.put("availableFlag", availableFlag);
+            Workbook workbook = writeOrders(moduleFile, moduleDO.getModuleId(), params);
             // 清空response
             response.reset();
             // 设置response的Header
@@ -281,9 +290,9 @@ public class OrderController extends BaseController {
         try {
             ExcelUtils et = new ExcelUtils(is);
             logger.info("read excel");
-            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getOrderMapping(moduleId);
+            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getFieldMapping(moduleId,ModuleType.MODULE);//业务字段和excel列名映射关系
             List<String> titleList = et.read(0, 0, 1).get(0);
-            Map<String, Integer> columnMap = new HashMap<String, Integer>();
+            Map<String, Integer> columnMap = new HashMap<String, Integer>();//业务字段与excel列号映射关系
             for (Map<String, Object> map : excelFieldMapList) {
                 if (map.get("excel_field_name") != null && !"".equals(map.get("excel_field_name"))) {
                     for (int i = 0; i < titleList.size(); i++) {
@@ -344,7 +353,7 @@ public class OrderController extends BaseController {
                 orderDO.setStreet(address);
                 orderDO.setZipCode(ZipCodeUtils.getZipCode(orderDO.getProvince(), orderDO.getCity()));
                 orderDO.setConsigneeCountry("CN");
-                orderDO.setInsuranceType("无保");
+                orderDO.setInsuranceType("NI 无保/Not  Insurance");
                 if(orderDO.getProvince().equals("上海")||orderDO.getProvince().equals("北京")
                         ||orderDO.getProvince().equals("天津")||orderDO.getProvince().equals("重庆")){
                     orderDO.setProvince(orderDO.getProvince()+"市");
@@ -358,25 +367,22 @@ public class OrderController extends BaseController {
         return orderList;
     }
 
-    private Workbook writeOrders(File moduleFile, Long moduleId, String createDate) {
+    private Workbook writeOrders(File moduleFile, Long moduleId, Map params) {
         Workbook workbook = null;
         try {
             ExcelUtils et = new ExcelUtils(moduleFile);
             workbook = et.getWorkbook();
-            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getOrderMapping(moduleId);
+            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getFieldMapping(moduleId, ModuleType.MODULE);//业务字段和excel列名映射关系
             List<String> titleList = et.read(0, 0, 1).get(0);
             Row firstRow = workbook.getSheetAt(0).getRow(1);
-            Map<String, Integer> columnMap = new HashMap<String, Integer>();
-
-            Map map = new HashMap();
-            map.put("createDate", createDate);
-            List<OrderDO> orderList = orderService.list(map);
+            Map<String, Integer> columnMap = new HashMap<String, Integer>();//业务字段与excel列号映射关系
+            List<OrderDO> orderList = orderService.list(params);
             Map<String, List<OrderDO>> rowMap = new HashMap();
             for (OrderDO orderDO : orderList) {
-                if (!rowMap.containsKey(orderDO.getOrderId())) {
-                    rowMap.put(orderDO.getOrderId(), new ArrayList<OrderDO>());
+                if (!rowMap.containsKey(orderDO.getOrderId()+orderDO.getWarehouseCode())) {
+                    rowMap.put(orderDO.getOrderId()+orderDO.getWarehouseCode(), new ArrayList<OrderDO>());
                 }
-                rowMap.get(orderDO.getOrderId()).add(orderDO);
+                rowMap.get(orderDO.getOrderId()+orderDO.getWarehouseCode()).add(orderDO);
             }
             int rownum = 2;
             // 第一行是标题，第二行是样例
@@ -403,17 +409,6 @@ public class OrderController extends BaseController {
                     int skuNum = 1;
                     for (OrderDO oneOrderDO : rowEntry.getValue()) {
                         orderMap = RefBeanUtils.getFieldValueMap(oneOrderDO);
-//                        for (Map.Entry<String, String> orderEntry : orderMap.entrySet()) {
-//                            for (Map<String, Object> excelFieldMap : excelFieldMapList) {
-//                                if (excelFieldMap.get("excel_field_name") != null && !"".equals(excelFieldMap.get("excel_field_name"))) {
-//                                    if(((String) excelFieldMap.get("excel_field_name")).contains("SKU")){
-//                                        singleRowMap.put((sku.replace("#N#",skuNum+"")),orderEntry.getValue());
-//                                    }else if(((String) excelFieldMap.get("excel_field_name")).contains("数量")){
-//                                        singleRowMap.put((sku.replace("#N#",skuNum+"")),orderEntry.getValue());
-//                                    }
-//                                }
-//                            }
-//                        }
                         for (int i = 0; i < titleList.size(); i++) {
                             if (titleList.get(i).equals(sku.replace("#N#", skuNum + ""))) {
                                 singleRowMap.put(sku.replace("#N#", skuNum + ""), orderMap.get("sku"));
@@ -433,11 +428,11 @@ public class OrderController extends BaseController {
                         for (int colnum = 0; colnum < firstRow.getLastCellNum(); colnum++) {
                             Cell cell = workbook.getSheetAt(0).getRow(rownum).getCell(colnum);
                             if (singleRowMap.containsKey(titleList.get(colnum))) {
-                                if (singleRowMap.get(titleList.get(colnum)) == null || "".equals(singleRowMap.get(titleList.get(colnum)))) {
-                                    cell.setCellValue(firstRow.getCell(colnum).getStringCellValue());
-                                } else {
+//                                if (singleRowMap.get(titleList.get(colnum)) == null || "".equals(singleRowMap.get(titleList.get(colnum)))) {
+//                                    cell.setCellValue(firstRow.getCell(colnum).getStringCellValue());
+//                                } else {
                                     cell.setCellValue(singleRowMap.get(titleList.get(colnum)));
-                                }
+//                                }
                             }
                         }
                         rownum++;
@@ -449,6 +444,7 @@ public class OrderController extends BaseController {
                 for(CellRangeAddress cra : dv.getRegions().getCellRangeAddresses()){
                     if(cra.getFirstRow()>0){
                         cra.setLastRow(rownum);
+                        workbook.getSheetAt(0).addValidationData(dv);
                     }
                 }
             }

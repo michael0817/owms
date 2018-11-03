@@ -1,11 +1,12 @@
 package com.bootdo.order.controller;
 
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.controller.BaseController;
 import com.bootdo.common.service.DictService;
 import com.bootdo.common.utils.*;
 import com.bootdo.order.domain.ExpressDO;
 import com.bootdo.order.domain.ModuleDO;
+import com.bootdo.order.enums.ModuleType;
 import com.bootdo.order.service.ExpressService;
 import com.bootdo.order.service.FieldMappingService;
 import com.bootdo.order.service.ModuleService;
@@ -46,7 +47,7 @@ public class ExpressController extends BaseController {
     private DictService dictService;
 
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
 
     @GetMapping()
     @RequiresPermissions("order:express:list")
@@ -82,7 +83,7 @@ public class ExpressController extends BaseController {
                 return R.error("导入失败:不是当前日期的文件");
             }
             Map moduleMap = new HashMap();
-            moduleMap.put("moduleType", 3);
+            moduleMap.put("moduleType", ModuleType.EXPRESS.getIndex());
             List<ModuleDO> moduleList = moduleService.list(moduleMap);
             boolean matchFlag = false;
             for (ModuleDO moduleDO : moduleList) {
@@ -118,7 +119,7 @@ public class ExpressController extends BaseController {
         File tmpFolder = new File(bootdoConfig.getUploadPath() + "/tmp/" + new Date().toString());
         try {
             Map map = new HashMap();
-            map.put("moduleType", 3);
+            map.put("moduleType", ModuleType.EXPRESS.getIndex());
             List<ModuleDO> moduleList = moduleService.list(map);
             ModuleDO moduleDO = moduleList.get(0);
             String path = bootdoConfig.getUploadPath() + "/modules/" + moduleDO.getUrl();
@@ -239,7 +240,7 @@ public class ExpressController extends BaseController {
         List<ExpressDO> expressList = new ArrayList<ExpressDO>();
         try {
             ExcelUtils et = new ExcelUtils(is);
-            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getExpressMapping(moduleId);
+            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getFieldMapping(moduleId,ModuleType.EXPRESS);
             List<String> titleList = et.read(0, 0, 1).get(0);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();
             for (Map<String, Object> map : excelFieldMapList) {
@@ -259,7 +260,7 @@ public class ExpressController extends BaseController {
                     map.put(entry.getKey(), colList.get(entry.getValue()));
                 }
                 RefBeanUtils.setFieldValue(expressDO, map);
-                if (expressDO.getOrderId() == null || expressDO.getExpressId() == null) {
+                if (expressDO.getOrderId() == null || expressDO.getExpressId() == null || expressDO.getSku() == null) {
                     continue;
                 }
                 expressList.add(expressDO);
@@ -273,7 +274,7 @@ public class ExpressController extends BaseController {
     private Map<Long, Workbook> writeExpresses(File moduleFile, Long moduleId, Date createDate) {
         Map<Long, Workbook> workbookList = new HashMap<Long, Workbook>();
         try {
-            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getExpressMapping(moduleId);
+            List<Map<String, Object>> excelFieldMapList = fieldMappingService.getFieldMapping(moduleId,ModuleType.EXPRESS);
             ExcelUtils et = new ExcelUtils(moduleFile);
             List<String> titleList = et.read(0, 0, 1).get(0);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();

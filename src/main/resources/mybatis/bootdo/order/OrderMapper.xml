@@ -30,7 +30,14 @@
             <if test="zipCode != null and zipCode != ''">and zip_code = #{zipCode}</if>
             <if test="sku != null and sku != ''">and sku = #{sku}</if>
             <if test="quantity != null and quantity != ''">and quantity = #{quantity}</if>
-            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="startDate != null and startDate != ''">and create_date &gt;= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">and create_date &lt;= #{endDate}</if>
+            <choose>
+                <when test="availableFlag != null and availableFlag == 'all'"></when>
+                <when test="availableFlag == 0">and warehouse_code is null and #{availableFlag} = #{availableFlag}</when>
+                <when test="availableFlag == 1">and warehouse_code is not null</when>
+                <otherwise></otherwise>
+            </choose>
         </where>
         <choose>
             <when test="sort != null and sort.trim() != ''">
@@ -66,7 +73,14 @@
             <if test="zipCode != null and zipCode != ''">and zip_code = #{zipCode}</if>
             <if test="sku != null and sku != ''">and sku = #{sku}</if>
             <if test="quantity != null and quantity != ''">and quantity = #{quantity}</if>
-            <if test="createDate != null and createDate != ''">and create_date = #{createDate}</if>
+            <if test="startDate != null and startDate != ''">and create_date &gt;= #{startDate}</if>
+            <if test="endDate != null and endDate != ''">and create_date &lt;= #{endDate}</if>
+            <choose>
+                <when test="availableFlag != null or availableFlag == 'all'"></when>
+                <when test="availableFlag == 0">and warehouse_code is null and #{availableFlag} = #{availableFlag}</when>
+                <when test="availableFlag == 1">and warehouse_code is not null</when>
+                <otherwise></otherwise>
+            </choose>
         </where>
     </select>
 

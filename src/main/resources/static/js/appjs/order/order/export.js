@@ -13,7 +13,7 @@ $.validator.setDefaults({
 });
 
 function download() {
-    window.open("/order/order/export/"+$('#createDate').val());
+    window.open("/order/order/export/"+$('#createDate').val()+"/"+$('#availableFlag').val());
 }
 
 function validateRule() {

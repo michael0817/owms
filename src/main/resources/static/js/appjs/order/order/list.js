@@ -2,9 +2,13 @@
 var prefix = "/order/order"
 $(function() {
     laydate({
-        elem: '#createDate'
+        elem: '#startDate'
     });
-    $('#createDate').val(laydate.now());
+    laydate({
+        elem: '#endDate'
+    });
+    $('#startDate').val(laydate.now(-7));
+    $('#endDate').val(laydate.now());
     load();
 });
 
@@ -27,7 +31,7 @@ function load() {
 						singleSelect : false, // 设置为true将禁止多选
 						// contentType : "application/x-www-form-urlencoded",
 						// //发送到服务器的数据编码类型
-						pageSize : 10, // 如果设置了分页，每页数据条数
+						pageSize : 20, // 如果设置了分页，每页数据条数
 						pageNumber : 1, // 如果设置了分布，首页页码
 						//search : false, // 是否显示搜索框
 						showColumns : true, // 是否显示内容下拉框（选择显示的列）
@@ -37,9 +41,11 @@ function load() {
 								//说明：传入后台的参数包括offset开始索引，limit步长，sort排序列，order：desc或者,以及所有列的键值对
 								limit: params.limit,
 								offset:params.offset,
-					            createDate:$('#createDate').val(),
+					            startDate:$('#startDate').val(),
+                                endDate:$('#endDate').val(),
 								moduleId:$('#moduleId').val(),
-                                orderId:$('#orderId').val()
+                                orderId:$('#orderId').val(),
+                                availableFlag:$('#availableFlag').val()
 							};
 						},
 						// //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
@@ -57,8 +63,16 @@ function load() {
 									title : '订单编号' 
 								},
 								{
-									field : 'moduleId',
-									title : '模板编号' 
+									field : 'availableFlag',
+									title : '库存情况',
+                                    formatter : function(value, row, index) {
+                                        if(row.warehouseCode == ''||row.warehouseCode == null){
+                                            return '库存不足';
+                                        }else{
+                                            return '库存足够';
+                                        }
+                                    }
+
 								},
 								{
 									field : 'warehouseCode',

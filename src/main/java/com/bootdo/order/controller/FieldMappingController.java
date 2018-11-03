@@ -84,7 +84,7 @@ public class FieldMappingController extends BaseController {
         return "order/fieldMapping/add";
     }
 
-    @GetMapping("/edit/{moduleId}")
+    @GetMapping("//{moduleId}")
     @RequiresPermissions("order:fieldMapping:edit")
     String edit(@PathVariable("moduleId") Long moduleId, Model model) {
         FieldMappingDO fieldMapping = fieldMappingService.get(moduleId);

@@ -1,6 +1,7 @@
 package com.bootdo.order.service;
 
 import com.bootdo.order.domain.FieldMappingDO;
+import com.bootdo.order.enums.ModuleType;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ public interface FieldMappingService {
 
     int batchRemove(Long[] moduleIds);
 
-    List<Map<String, Object>> getOrderMapping(Long moduleId);
+    List<Map<String, Object>> getFieldMapping(Long moduleId,ModuleType moduleType);
 
-    List<Map<String, Object>> getExpressMapping(Long moduleId);
 }

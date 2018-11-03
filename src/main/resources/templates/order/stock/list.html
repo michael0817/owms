@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head th:include="include :: header"></head>
+<body class="gray-bg">
+	<div class="wrapper wrapper-content ">
+		<div class="col-sm-12">
+			<div class="ibox">
+				<div class="ibox-body">
+					<div class="fixed-table-toolbar">
+						<div class="columns pull-left">
+							<button shiro:hasPermission="order:stock:import" type="button" class="btn  btn-primary" onclick="mergeAndImport()">
+								<i class="fa fa-upload" aria-hidden="true"></i>导入
+							</button>
+							<button shiro:hasPermission="order:stock:edit" type="button" class="btn  btn-primary" onclick="editPiority()">
+								<i class="fa fa-edit" aria-hidden="true"></i>调整仓库优先级
+							</button>
+						</div>
+						<div class="columns pull-right">
+							<button class="btn btn-success" onclick="reLoad()">查询</button>
+						</div>
+                        <div class="search pull-right ">
+                            <select name="availableFlag" id="availableFlag"
+                                    class="form-control chosen-select">
+                                <option value="">--库存情况--</option>
+                                <option value="0">库存不足</option>
+                                <option value="1">库存足够</option>
+                            </select>
+                        </div>
+                        <div class="search pull-right ">
+                            <input id="sku" name="sku" type="text" class="form-control" placeholder="SKU">
+                        </div>
+                        <div class="search pull-right ">
+                            <input id="warehouseCode" name="warehouseCode" type="text" class="form-control" placeholder="仓库">
+                        </div>
+					</div>
+					<table id="exampleTable" data-mobile-responsive="true">
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--shiro控制bootstraptable行内按钮看见性 来自bootdo的创新方案 -->
+		<div>
+			<script type="text/javascript">
+				var s_edit_h = 'hidden';
+				var s_remove_h = 'hidden';
+				var s_resetPwd_h = 'hidden';
+			</script>
+		</div>
+		<div shiro:hasPermission="order:stock:edit">
+			<script type="text/javascript">
+				s_edit_h = '';
+			</script>
+		</div>
+		<div shiro:hasPermission="order:stock:remove">
+			<script type="text/javascript">
+				var s_remove_h = '';
+			</script>
+		</div>
+	</div>
+	<div th:include="include :: footer"></div>
+	<script type="text/javascript" src="/js/appjs/order/stock/list.js"></script>
+</body>
+</html>

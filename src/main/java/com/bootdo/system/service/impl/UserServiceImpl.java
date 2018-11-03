@@ -1,6 +1,6 @@
 package com.bootdo.system.service.impl;
 
-import com.bootdo.common.config.BootdoConfig;
+import com.bootdo.common.config.BootdoFileConfig;
 import com.bootdo.common.domain.FileDO;
 import com.bootdo.common.domain.Tree;
 import com.bootdo.common.service.FileService;
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private FileService sysFileService;
     @Autowired
-    private BootdoConfig bootdoConfig;
+    private BootdoFileConfig bootdoConfig;
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override

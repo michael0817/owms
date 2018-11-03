@@ -177,7 +177,6 @@ function batchRemove() {
 }
 
 function loadModuleType() {
-    var html = "";
     $.ajax({
         url: '/common/dict/list/order_module',
 		async: false,

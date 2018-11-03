@@ -116,8 +116,6 @@ public class RefBeanUtils {
 
                         field.getType());
 
-// String fieldKeyName = parKeyName(field.getName());
-
                 String fieldKeyName = field.getName();
 
                 String value = valMap.get(fieldKeyName);

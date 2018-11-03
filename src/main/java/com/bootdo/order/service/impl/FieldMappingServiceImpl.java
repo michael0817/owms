@@ -2,6 +2,7 @@ package com.bootdo.order.service.impl;
 
 import com.bootdo.order.dao.FieldMappingDao;
 import com.bootdo.order.domain.FieldMappingDO;
+import com.bootdo.order.enums.ModuleType;
 import com.bootdo.order.service.FieldMappingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -55,16 +56,10 @@ public class FieldMappingServiceImpl implements FieldMappingService {
     }
 
     @Override
-    public List<Map<String, Object>> getOrderMapping(Long moduleId) {
+    public List<Map<String, Object>> getFieldMapping(Long moduleId,ModuleType moduleType) {
         List<Map<String, Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
-                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId, "order_module_2"});
+                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId, "order_module_"+moduleType.getIndex()});
         return excelFieldMapList;
     }
 
-    @Override
-    public List<Map<String, Object>> getExpressMapping(Long moduleId) {
-        List<Map<String, Object>> excelFieldMapList = jdbcTemplate.queryForList("select t.excel_field_name,r.value from order_field_mapping t,sys_dict r " +
-                "where t.module_id=? and r.type=? and t.business_field_name = r.name;", new Object[]{moduleId, "order_module_3"});
-        return excelFieldMapList;
-    }
 }

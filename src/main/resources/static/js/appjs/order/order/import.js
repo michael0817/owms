@@ -55,9 +55,9 @@ function formSubmit(){
                 if (data.code == 0) {
                     parent.layer.alert(
                         "导入成功的文件：<br/>"+data.successList+"<br/>"+
-                        "导入失败的订单：<br/>"+data.failedOrderList+"<br/>"+
+                        "重复的订单：<br/>"+data.failedOrderList+"<br/>"+
                         "导入失败的文件：<br/>"+data.failedList+"<br/>"+
-                        "忽略的文件：<br/>"+data.ignoreList+"<br/>"
+                        "文件名不匹配：<br/>"+data.ignoreList+"<br/>"
                         ,{area: ['800px', '480px']});
                     parent.reLoad();
                     var index = parent.layer.getFrameIndex(window.name); // 获取窗口索引

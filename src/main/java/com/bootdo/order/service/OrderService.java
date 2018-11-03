@@ -30,4 +30,6 @@ public interface OrderService {
     int remove(String orderId);
 
     int batchRemove(String[] orderIds);
+
+    int saveOrder(OrderDO orderDO) throws Exeption;
 }
