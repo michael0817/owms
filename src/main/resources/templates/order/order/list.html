@@ -23,31 +23,37 @@
 								<i class="fa" aria-hidden="true"></i>删除
 							</button>
 						</div>
-						<div class="columns pull-right">
-							<button class="btn btn-success" onclick="reLoad()">查询</button>
-						</div>
-						<div class="search pull-right ">
-							<select name="availableFlag" id="availableFlag"
-									class="form-control chosen-select">
-								<option value="all">--库存情况--</option>
-								<option value="0">库存不足</option>
-								<option value="1">库存足够</option>
-							</select>
-						</div>
-						<div class="search pull-right ">
-							<input id="orderId" type="text" class="form-control" placeholder="订单编号">
-						</div>
-						<!--<div class="search pull-right ">-->
-							<!--<input id="moduleId" type="text" class="form-control" placeholder="模板">-->
-						<!--</div>-->
-						<div class="search pull-right ">
-							<input type="text" class="laydate-icon form-control" id="endDate" name="endDate" placeholder="结束日期"
-								   onclick="laydate()" readonly="readonly"/>
-						</div>
-						<div class="search pull-right ">
+                    </div>
+                </div>
+            </div>
+            <div class="ibox">
+                <div class="ibox-body">
+                    <div class="fixed-table-toolbar">
+						<div class="search pull-left ">
 							<input type="text" class="laydate-icon form-control" id="startDate" name="startDate" placeholder="起始日期"
 								   onclick="laydate()" readonly="readonly"/>
 						</div>
+                        <div class="search pull-left">
+                            <input type="text" class="laydate-icon form-control" id="endDate" name="endDate" placeholder="结束日期"
+                                   onclick="laydate()" readonly="readonly"/>
+                        </div>
+                        <div class="search pull-left ">
+                            <input id="orderId" type="text" class="form-control" placeholder="订单编号">
+                        </div>
+                        <div class="search pull-left ">
+                            <input id="orderBatch" type="text" class="form-control" placeholder="导入批次">
+                        </div>
+                        <div class="search pull-left ">
+                            <select name="availableFlag" id="availableFlag"
+                                    class="form-control chosen-select">
+                                <option value="all">--库存情况--</option>
+                                <option value="0">库存不足</option>
+                                <option value="1">库存足够</option>
+                            </select>
+                        </div>
+                        <div class="columns pull-left">
+                            <button class="btn btn-success" onclick="reLoad()">查询</button>
+                        </div>
 					</div>
 					<table id="exampleTable" data-mobile-responsive="true">
 					</table>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.bootdo.order.dao.OrderBatchDao">
+
+    <select id="getMaxBatch" resultType="int">
+      select max(`order_batch`)+1 as max_batch from
+      (select order_id,order_batch,batch_date from order_batch
+      where batch_date = #{batchDate}
+      union select '' as `order_id`,0 as `order_batch`,'' as `batch_date` from dual) t
+    </select>
+
+    <select id="list" resultType="com.bootdo.order.domain.OrderBatchDO">
+        select `order_id`,`order_batch`,`batch_date` from order_batch
+        <where>
+            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="orderBatch != null and orderBatch != ''">and order_batch = #{orderBatch}</if>
+            <if test="batchDate != null and batchDate != ''">and batch_date = #{batchDate}</if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by batch_date,order_batch desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from order_batch
+        <where>
+            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="orderBatch != null and orderBatch != ''">and order_batch = #{orderBatch}</if>
+            <if test="batchDate != null and batchDate != ''">and batch_date = #{batchDate}</if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.bootdo.order.domain.OrderBatchDO">
+		insert into order_batch
+		(
+			`order_id`,`order_batch`,`batch_date`
+		)
+		values
+		(
+			#{orderId}, #{orderBatch}, #{batchDate}
+		)
+		ON DUPLICATE KEY UPDATE
+			order_batch = VALUES (order_batch)
+	</insert>
+
+    <delete id="remove">
+		delete from order_batch where batch_date = #{batchDate} and order_batch = #{orderBatch}
+	</delete>
+
+    <select id="getOrderBatchNums" resultType="int">
+        select distinct order_batch from order_batch where batch_date = #{batchDate} order by order_batch desc
+    </select>
+
+</mapper>

@@ -1,9 +1,13 @@
 $().ready(function() {
     validateRule();
-    laydate({
-        elem: '#createDate'
+    laydate ({
+        elem: '#createDate',
+        choose: function(value){
+            loadOrderBatchNums();
+        }
     });
     $('#createDate').val(laydate.now());
+    loadOrderBatchNums();
 });
 
 $.validator.setDefaults({
@@ -11,9 +15,8 @@ $.validator.setDefaults({
 		download();
 	}
 });
-
 function download() {
-    window.open("/order/order/export/"+$('#createDate').val()+"/"+$('#availableFlag').val());
+    window.open("/order/order/export/"+$('#createDate').val()+"/"+$('#orderBatch').val()+"/"+$('#availableFlag').val());
 }
 
 function validateRule() {
@@ -30,4 +33,23 @@ function validateRule() {
             }
         }
     })
+}
+
+
+function loadOrderBatchNums(){
+    $.ajax({
+        type : 'GET',
+        url : '/order/order/getOrderBatchNums/'+$('#createDate').val(),
+        success : function(data) {
+            $('#orderBatch option:gt(0)').remove();
+            if(data.length > 0){
+                $.each(data,function(i,v){
+                    $('#orderBatch').append('<option value="'+v+ '">'+v+'</option>');
+                })
+            }
+            // $.each(data,function(v){
+            //     alert(v);
+            // })
+        }
+    });
 }

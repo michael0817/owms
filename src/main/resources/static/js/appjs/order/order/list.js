@@ -45,6 +45,7 @@ function load() {
                                 endDate:$('#endDate').val(),
 								moduleId:$('#moduleId').val(),
                                 orderId:$('#orderId').val(),
+                                orderBatch:$('#orderBatch').val(),
                                 availableFlag:$('#availableFlag').val()
 							};
 						},
@@ -58,6 +59,10 @@ function load() {
 								{
 									checkbox : true
 								},
+                                {
+                                    field : 'orderBatch',
+                                    title : '导入批次'
+                                },
 								{
 									field : 'orderId', 
 									title : '订单编号' 

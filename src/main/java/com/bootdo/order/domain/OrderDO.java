@@ -14,6 +14,8 @@ import java.util.Date;
 public class OrderDO implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    //导入批次
+    private Integer orderBatch;
     //订单编号
     private String orderId;
     //模板编号
@@ -52,6 +54,20 @@ public class OrderDO implements Serializable {
     private String quantity;
     //创建日期
     private Date createDate;
+
+    /**
+     * 设置：导入批次
+     */
+    public void setOrderBatch(Integer orderBatch) {
+        this.orderBatch = orderBatch;
+    }
+
+    /**
+     * 获取：导入批次
+     */
+    public Integer getOrderBatch() {
+        return orderBatch;
+    }
 
     /**
      * 设置：订单编号

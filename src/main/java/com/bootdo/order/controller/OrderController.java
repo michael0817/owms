@@ -9,6 +9,7 @@ import com.bootdo.order.domain.OrderDO;
 import com.bootdo.order.enums.ModuleType;
 import com.bootdo.order.service.FieldMappingService;
 import com.bootdo.order.service.ModuleService;
+import com.bootdo.order.service.OrderBatchService;
 import com.bootdo.order.service.OrderService;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataValidation;
@@ -54,6 +55,9 @@ public class OrderController extends BaseController {
 
     @Autowired
     private FieldMappingService fieldMappingService;
+
+    @Autowired
+    private OrderBatchService orderBatchService;
 
     @Autowired
     private BootdoFileConfig bootdoConfig;
@@ -163,6 +167,7 @@ public class OrderController extends BaseController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.CHINA);
             String date = createDate == null ? sdf.format(new Date()) : sdf.format(createDate);
             List<OrderDO> totalOrderList = new ArrayList<OrderDO>();
+            Integer batchNum = orderBatchService.getMaxBatch(createDate);
             for (MultipartFile singleFile : file) {
                 if (singleFile.getOriginalFilename().endsWith(".xls") || singleFile.getOriginalFilename().endsWith(".xlsx")) {
                     String name[] = singleFile.getOriginalFilename().split("\\\\");
@@ -204,8 +209,7 @@ public class OrderController extends BaseController {
                 }
                 for (OrderDO orderDO : totalOrderList) {
                     try {
-//                        orderService.save(orderDO);
-                        orderService.saveOrder(orderDO);
+                        orderService.saveOrder(orderDO,batchNum);
                     } catch (Exception e) {
                         logger.error(e.getMessage());
                         e.printStackTrace();
@@ -228,9 +232,10 @@ public class OrderController extends BaseController {
     }
 
     @ResponseBody
-    @GetMapping("/export/{createDate}/{availableFlag}")
+    @GetMapping("/export/{createDate}/{orderBatch}/{availableFlag}")
     @RequiresPermissions("order:order:export")
     void download(@PathVariable("createDate") Date createDate,
+                  @PathVariable("orderBatch") Integer orderBatch,
                   @PathVariable("availableFlag") String availableFlag,
                   HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -247,13 +252,15 @@ public class OrderController extends BaseController {
             String date = createDate == null ? sdf.format(new Date()) : sdf.format(createDate);
             String filename = moduleDO.getUrl().substring(0, moduleDO.getUrl().indexOf("."))
                     + date + moduleFile.getName().substring(moduleFile.getName().lastIndexOf("."));
-
             // 写Excel
             Map params = new HashMap();
-            params.put("createDate", date);
+            params.put("startDate", date);
+            params.put("endDate", date);
+            params.put("orderBatch", orderBatch);
             params.put("availableFlag", availableFlag);
-            Workbook workbook = writeOrders(moduleFile, moduleDO.getModuleId(), params);
-            // 清空response
+            List<OrderDO> orderList = orderService.list(params);
+            Workbook workbook = writeOrders(moduleFile, moduleDO.getModuleId(), orderList);
+            // 清空response" selected="selected">--批次号--</option>
             response.reset();
             // 设置response的Header
             response.setContentType("application/vnd.ms-excel;charset=utf-8");
@@ -367,7 +374,7 @@ public class OrderController extends BaseController {
         return orderList;
     }
 
-    private Workbook writeOrders(File moduleFile, Long moduleId, Map params) {
+    private Workbook writeOrders(File moduleFile, Long moduleId, List<OrderDO> orderList) {
         Workbook workbook = null;
         try {
             ExcelUtils et = new ExcelUtils(moduleFile);
@@ -376,7 +383,6 @@ public class OrderController extends BaseController {
             List<String> titleList = et.read(0, 0, 1).get(0);
             Row firstRow = workbook.getSheetAt(0).getRow(1);
             Map<String, Integer> columnMap = new HashMap<String, Integer>();//业务字段与excel列号映射关系
-            List<OrderDO> orderList = orderService.list(params);
             Map<String, List<OrderDO>> rowMap = new HashMap();
             for (OrderDO orderDO : orderList) {
                 if (!rowMap.containsKey(orderDO.getOrderId()+orderDO.getWarehouseCode())) {
@@ -454,6 +460,14 @@ public class OrderController extends BaseController {
             e.printStackTrace();
         }
         return workbook;
+    }
+
+    @ResponseBody
+    @GetMapping("/getOrderBatchNums/{createDate}")
+    @RequiresPermissions("order:order:list")
+    public List<Integer> getOrderBatchNums(@PathVariable("createDate") Date createDate) {
+        List<Integer> orderBatchNums = orderBatchService.getOrderBatchNums(createDate);
+        return orderBatchNums;
     }
 
 }

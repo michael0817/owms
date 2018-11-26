@@ -21,9 +21,9 @@ public interface OrderService {
 
     int count(Map<String, Object> map);
 
-    int save(OrderDO list);
+    int save(OrderDO orders);
 
-    int update(OrderDO list);
+    int update(OrderDO order);
 
     int removeByDate(Date createDate);
 
@@ -31,5 +31,5 @@ public interface OrderService {
 
     int batchRemove(String[] orderIds);
 
-    int saveOrder(OrderDO orderDO) throws Exeption;
+    int saveOrder(OrderDO orderDO,Integer batchNum) throws Exeption;
 }

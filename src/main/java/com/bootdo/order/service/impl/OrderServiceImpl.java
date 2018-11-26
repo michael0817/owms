@@ -3,9 +3,11 @@ package com.bootdo.order.service.impl;
 import com.bootdo.common.domain.DictDO;
 import com.bootdo.common.service.DictService;
 import com.bootdo.order.dao.OrderDao;
+import com.bootdo.order.domain.OrderBatchDO;
 import com.bootdo.order.domain.OrderDO;
 import com.bootdo.order.domain.StockDO;
 import com.bootdo.order.service.Exeption;
+import com.bootdo.order.service.OrderBatchService;
 import com.bootdo.order.service.OrderService;
 import com.bootdo.order.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private DictService dictService;
 
+    @Autowired
+    private OrderBatchService orderBatchService;
+
     @Override
     public OrderDO get(String orderId) {
         return orderDao.get(orderId);
@@ -45,13 +50,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public int save(OrderDO list) {
-        return orderDao.save(list);
+    public int save(OrderDO order) {
+        return orderDao.save(order);
     }
 
     @Override
-    public int update(OrderDO list) {
-        return orderDao.update(list);
+    public int update(OrderDO order) {
+        return orderDao.update(order);
     }
 
     @Override
@@ -71,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public int saveOrder(OrderDO orderDO) throws Exeption {
+    public int saveOrder(OrderDO orderDO, Integer batchNum) throws Exeption {
         Map params = new HashMap();
         params.put("sku",orderDO.getSku());
         List<StockDO> stockList = stockService.list(params);
@@ -91,6 +96,11 @@ public class OrderServiceImpl implements OrderService {
                 stockService.update(stockDO);
             }
         }
+        OrderBatchDO orderBatchDO = new OrderBatchDO();
+        orderBatchDO.setOrderId(orderDO.getOrderId());
+        orderBatchDO.setBatchDate(orderDO.getCreateDate());
+        orderBatchDO.setOrderBatch(batchNum);
+        orderBatchService.save(orderBatchDO);
         return save(orderDO);
     }
 

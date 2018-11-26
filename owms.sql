@@ -8,7 +8,13 @@ CREATE TABLE `order_module` (
   `create_date` date NOT NULL COMMENT '创建日期',
   PRIMARY KEY (`module_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='订单模板';
-
+DROP TABLE IF EXISTS `order_batch`;
+CREATE TABLE `order_batch` (
+  `order_id` varchar(100) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `order_batch` int(11) NOT NULL COMMENT '订单批次',
+  `batch_date` date NOT NULL COMMENT '导入日期',
+  PRIMARY KEY (`order_id`,`batch_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='导入批次';
 DROP TABLE IF EXISTS `order_list`;
 CREATE TABLE `order_list` (
   `order_id` varchar(30) NOT NULL COMMENT '订单编号',

@@ -4,15 +4,16 @@
 <mapper namespace="com.bootdo.order.dao.OrderDao">
 
     <select id="get" resultType="com.bootdo.order.domain.OrderDO">
-		select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,``doorplate`,`zip_code`,`sku`,`quantity`,`create_date` from order_list where order_id = #{value}
-	</select>
+        select `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quantity`,`create_date` from order_list where order_id = #{value}
+    </select>
 
     <select id="list" resultType="com.bootdo.order.domain.OrderDO">
         select
-        `order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quantity`,`create_date`
-        from order_list
+        `order_batch`,r.`order_id`,`module_id`,`warehouse_code`,`delivery_style`,`insurance_type`,`insurance_value`,`consignee_name`,`consignee_phone`,`consignee_id`,`consignee_country`,`province`,`city`,`street`,`doorplate`,`zip_code`,`sku`,`quantity`,`create_date`
+        from order_batch t left join order_list r
+        on t.order_id = r.order_id and t.batch_date = r.create_date
         <where>
-            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="orderId != null and orderId != ''">and r.order_id = #{orderId}</if>
             <if test="moduleId != null and moduleId != ''">and module_id = #{moduleId}</if>
             <if test="warehouseCode != null and warehouseCode != ''">and warehouse_code = #{warehouseCode}</if>
             <if test="deliveryStyle != null and deliveryStyle != ''">and delivery_style = #{deliveryStyle}</if>
@@ -21,8 +22,7 @@
             <if test="consigneeName != null and consigneeName != ''">and consignee_name = #{consigneeName}</if>
             <if test="consigneePhone != null and consigneePhone != ''">and consignee_phone = #{consigneePhone}</if>
             <if test="consigneeId != null and consigneePhone != ''">and consignee_phone = #{consigneeId}</if>
-            <if test="consigneeCountry != null and consigneeCountry != ''">and consignee_country = #{consigneeCountry}
-            </if>
+            <if test="consigneeCountry != null and consigneeCountry != ''">and consignee_country = #{consigneeCountry}</if>
             <if test="province != null and province != ''">and province = #{province}</if>
             <if test="city != null and city != ''">and city = #{city}</if>
             <if test="street != null and street != ''">and street = #{street}</if>
@@ -32,6 +32,7 @@
             <if test="quantity != null and quantity != ''">and quantity = #{quantity}</if>
             <if test="startDate != null and startDate != ''">and create_date &gt;= #{startDate}</if>
             <if test="endDate != null and endDate != ''">and create_date &lt;= #{endDate}</if>
+            <if test="orderBatch != null and orderBatch != ''">and order_batch = #{orderBatch}</if>
             <choose>
                 <when test="availableFlag != null and availableFlag == 'all'"></when>
                 <when test="availableFlag == 0">and warehouse_code is null and #{availableFlag} = #{availableFlag}</when>
@@ -44,7 +45,7 @@
                 order by ${sort} ${order}
             </when>
             <otherwise>
-                order by order_id desc
+                order by create_date, order_batch desc
             </otherwise>
         </choose>
         <if test="offset != null and limit != null">
@@ -53,9 +54,10 @@
     </select>
 
     <select id="count" resultType="int">
-        select count(*) from order_list
+        select count(*) from order_batch t left join order_list r
+        on t.order_id = r.order_id and t.batch_date = r.create_date
         <where>
-            <if test="orderId != null and orderId != ''">and order_id = #{orderId}</if>
+            <if test="orderId != null and orderId != ''">and r.order_id = #{orderId}</if>
             <if test="moduleId != null and moduleId != ''">and module_id = #{moduleId}</if>
             <if test="warehouseCode != null and warehouseCode != ''">and warehouse_code = #{warehouseCode}</if>
             <if test="deliveryStyle != null and deliveryStyle != ''">and delivery_style = #{deliveryStyle}</if>
@@ -75,6 +77,7 @@
             <if test="quantity != null and quantity != ''">and quantity = #{quantity}</if>
             <if test="startDate != null and startDate != ''">and create_date &gt;= #{startDate}</if>
             <if test="endDate != null and endDate != ''">and create_date &lt;= #{endDate}</if>
+            <if test="orderBatch != null and orderBatch != ''">and order_batch = #{orderBatch}</if>
             <choose>
                 <when test="availableFlag != null or availableFlag == 'all'"></when>
                 <when test="availableFlag == 0">and warehouse_code is null and #{availableFlag} = #{availableFlag}</when>
@@ -85,49 +88,49 @@
     </select>
 
     <insert id="save" parameterType="com.bootdo.order.domain.OrderDO">
-		insert into order_list
-		(
-			`order_id`, 
-			`module_id`, 
-			`warehouse_code`, 
-			`delivery_style`, 
-			`insurance_type`, 
-			`insurance_value`, 
-			`consignee_name`, 
-			`consignee_phone`,
-			`consignee_id`,
-			`consignee_country`, 
-			`province`, 
-			`city`,
-			`street`,
-			`doorplate`, 
-			`zip_code`, 
-			`sku`, 
-			`quantity`, 
-			`create_date`
-		)
-		values
-		(
-			#{orderId}, 
-			#{moduleId}, 
-			#{warehouseCode}, 
-			#{deliveryStyle}, 
-			#{insuranceType}, 
-			#{insuranceValue}, 
-			#{consigneeName}, 
-			#{consigneePhone},
-			#{consigneeId},
-			#{consigneeCountry}, 
-			#{province}, 
-			#{city},
-			#{street},
-			#{doorplate}, 
-			#{zipCode}, 
-			#{sku}, 
-			#{quantity}, 
-			#{createDate}
-		)
-	</insert>
+            insert into order_list
+            (
+                `order_id`,
+                `module_id`,
+                `warehouse_code`,
+                `delivery_style`,
+                `insurance_type`,
+                `insurance_value`,
+                `consignee_name`,
+                `consignee_phone`,
+                `consignee_id`,
+                `consignee_country`,
+                `province`,
+                `city`,
+                `street`,
+                `doorplate`,
+                `zip_code`,
+                `sku`,
+                `quantity`,
+                `create_date`
+            )
+            values
+            (
+                #{orderId},
+                #{moduleId},
+                #{warehouseCode},
+                #{deliveryStyle},
+                #{insuranceType},
+                #{insuranceValue},
+                #{consigneeName},
+                #{consigneePhone},
+                #{consigneeId},
+                #{consigneeCountry},
+                #{province},
+                #{city},
+                #{street},
+                #{doorplate},
+                #{zipCode},
+                #{sku},
+                #{quantity},
+                #{createDate}
+            )
+        </insert>
 
     <update id="update" parameterType="com.bootdo.order.domain.OrderDO">
         update order_list
@@ -154,12 +157,12 @@
     </update>
 
     <delete id="remove">
-		delete from order_list where order_id = #{orderId}
-	</delete>
+            delete from order_list where order_id = #{orderId}
+        </delete>
 
     <delete id="removeByDate">
-		delete from order_list where create_date = #{createDate}
-	</delete>
+            delete from order_list where create_date = #{createDate}
+        </delete>
 
     <delete id="batchRemove">
         delete from order_list where order_id in
