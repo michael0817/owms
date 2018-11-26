@@ -199,6 +199,7 @@ function loadModuleType() {
     });
     //点击事件
     $('#moduleList').on('change', function(e, params) {
+        loadExcelFields();
     });
 }
 

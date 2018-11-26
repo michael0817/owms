@@ -43,7 +43,6 @@ public class LoginController extends BaseController {
     @Log("请求访问主页")
     @GetMapping({"/index"})
     String index(Model model) {
-        System.out.println("xumx"+getUserId());
         logger.info("xumx"+getUserId());
         List<Tree<MenuDO>> menus = menuService.listMenuTree(getUserId());
         model.addAttribute("menus", menus);
